@@ -33,6 +33,7 @@ You will find follwing files:
 
 * [Bitcoin Notes](https://github.com/rishabhworking/documentation/blob/master/bitcoinNotes.txt) - Things I learned about Bitcoin
 * [QT GUI](https://github.com/rishabhworking/documentation/blob/master/changesQTUI.txt) - Changing GUI of a POS/POW QT wallet of old type
+* [Win X Compile](https://github.com/rishabhworking/documentation/blob/master/winXcompilation.txt) - Steps to cross compile QT for windows64 and windows32
 * [Explorer Issues](https://github.com/rishabhworking/documentation/blob/master/Err_Dcm_Blk_Exp.txt) - Few bugs in found in iquidus explorer
 * [Dual Boot Issue](https://github.com/rishabhworking/documentation/blob/master/dualBootIssue.txt) - Steps to override windows bootloader with GRUBs
 
