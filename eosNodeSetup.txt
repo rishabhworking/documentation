@@ -1,0 +1,138 @@
+   ===================================================EOS Node Setup Ubuntu 16.04===================================================    
+
+
+1. sudo apt-get update
+
+2. sudo apt-get upgrade -y
+
+3. Clone EOS
+---------------------------------------
+
+git clone https://github.com/eosio/eos --recursive
+
+
+4. Run the build script which do the most of the job
+-----------------------------------------------------
+
+cd eos && cd scripts && ./eosio_build.sh
+
+(This whole process will take a while from one to one and half hour)
+
+5. Go into the build directory and install EOSIO
+---------------------------------------
+
+cd ../build
+
+sudo make install
+
+
+
+6. Find the Binaries
+----------------------------------------------------------------------------------------
+
+If everything goes well you will find binaries in:
+
+eos/build/bin
+
+It will contain: 
+
+* cleos  
+* keosd  
+* nodeos
+
+
+
+8. Wallet Directory
+---------------------------------------------------------------------------------
+
+All the EOS wallets we create are placed in /home/eosio-wallet directory.
+Name of the default wallet is: default.wallet
+
+-----------------------------------------
+
+In EOS you have an account and that account lives on blockchain and for being owner we must have private key of that account.
+
+First we create a key pair and with that key pair we will create an account.
+
+https://medium.com/@cc32d9/best-practices-for-eos-node-availability-1646c47191e
+
+Read more at:
+https://economictimes.indiatimes.com/articleshow/70331293.cms?utm_source=contentofinterest&utm_medium=text&utm_campaign=cppst
+
+
+https://steemit.com/eos/@attic-lab/how-to-install-eos-node-on-linux-step-by-step-guide-by-attic-lab
+
+https://github.com/EOSIO/eos/issues/6112
+
+https://developers.eos.io/eosio-nodeos/v1.0/docs/configuration-file
+
+https://github.com/EOSIO/eos/issues/4747
+
+-----------------------------------------------------------
+https://developers.eos.io
+
+
+curl http://localhost:8888/v1/chain/get_currency_stats
+curl http://localhost:8888/v1/wallet/list_keys
+
+curl --request POST \
+  --url  http://localhost:8888/v1/chain/get_block \
+  --header 'accept: application/json' \
+  --header 'content-type: application/json' \
+  --data '{"block_num_or_id":"100"}'
+
+curl --request POST \
+  --url http://localhost:8888/v1/history/get_actions \
+  --header 'content-type: application/json' \
+  --data '{"pos":"-1","offset":"-20","account_name":"eosio"}'
+
+curl --request POST \
+  --url http://host/:port/v1/net/status \
+  --header 'content-type: application/x-www-form-urlencoded; charset=UTF-8'
+
+
+nodeos -e -p eosio \
+--plugin eosio::producer_plugin \
+--plugin eosio::chain_api_plugin \
+--plugin eosio::http_plugin \
+--access-control-allow-origin='*' \
+--contracts-console \
+--http-validate-host=false \
+--verbose-http-errors >> nodeos.log 2>&1 &
+
+
+{
+	"server_version":"14185431",
+	"chain_id":"cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f",
+	"head_block_num":702699,
+	"last_irreversible_block_num":702698,
+	"last_irreversible_block_id":"000ab8ea45c5e12c4bacb0b650558424f7636c31b1beb83fc77a5e042ad84735",
+	"head_block_id":"000ab8ebafb5c3e985b33e45c1f6d11168ca7fb12351e9414b4b95cb27c99bbb",
+	"head_block_time":"2019-07-29T12:26:54.500",
+	"head_block_producer":"eosio",
+	"virtual_block_cpu_limit":200000000,
+	"virtual_block_net_limit":1048576000,
+	"block_cpu_limit":199900,
+	"block_net_limit":1048576,
+	"server_version_string":"v1.8.1",
+	"fork_db_head_block_num":702699,
+	"fork_db_head_block_id":"000ab8ebafb5c3e985b33e45c1f6d11168ca7fb12351e9414b4b95cb27c99bbb"
+}
+
+---------------------------------------------
+
+nodeos -e --plugin eosio::chain_plugin	 --plugin eosio::chain_api_plugin --plugin eosio::history_plugin --plugin eosio::history_api_plugin --plugin eosio::http_plugin --plugin eosio::net_plugin --plugin eosio::net_api_plugin --access-control-allow-origin='*' --contracts-console --http-validate-host=false --verbose-http-errors >> nodeos.log 2>&1 &
+
+Data Directory: Linux: ~/.local/share/eosio/nodeos/config
+Answer about Nodeos not supporting wallet plugin: https://github.com/EOSIO/eos/issues/5248
+Node Setup: https://developers.eos.io/eosio-home/docs/getting-the-software
+Plugins List: https://developers.eos.io/eosio-nodeos/docs/history_plugin
+
+Nodeos API Reference: https://developers.eos.io/eosio-nodeos/reference
+Keosd API Reference: https://developers.eos.io/keosd/reference
+
+https://developers.eos.io/eosio-nodeos/v1.0.0/docs/cleos-overview
+
+
+ If you did not specify a --data-dir parameter when launching eos, your wallet files are stored in the ~/eosio-wallet folder.
+

@@ -1,0 +1,95 @@
+   ===================================================Geth Manual Installation Ubuntu 16.04===================================================
+
+1. Clone Ethereu's Go language Client:
+--------------------------------------
+
+git clone https://github.com/ethereum/go-ethereum
+
+
+2. Install dependencies:
+------------------------
+
+sudo apt-get install -y build-essential libgmp3-dev
+
+wget https://dl.google.com/go/go1.12.7.linux-amd64.tar.gz
+
+tar -C /usr/local -xzf go1.12.7.linux-amd64.tar.gz
+
+export PATH=$PATH:/usr/local/go/bin
+
+
+3. Build Geth:
+---------------
+
+cd go-ethereum && make geth
+
+
+4. Create Geth Service:
+-----------------------
+Now come back to the home directory
+
+cd ~ && nano geth.service (Then paste the following lines, but mind the location of the geth executables)
+ 
+[Unit]
+Description=Geth
+ 
+[Service]
+Type=simple
+User=root
+Restart=always
+WorkingDirectory=/root
+ExecStart=/root/go-ethereum/build/bin/./geth --config config.toml
+ 
+[Install]
+WantedBy=default.target
+
+5. Deploying Service:
+---------------------
+
+
+cp ./geth.service /etc/systemd/system/geth.service
+
+systemctl daemon-reload
+
+systemctl enable geth.service
+
+
+4. Create Configuration File:
+-----------------------------
+
+Now go back to the directory containing compiled geth executables: cd /root/go-ethereum/build/bin/
+
+During Sync:
+
+./geth --syncmode "fast" --cache=512 --rpcport=4163 --rpcapi=eth,web3,net,personal --ws --shh dumpconfig > ~/config.toml
+
+For production server:
+
+./geth --syncmode "fast" --cache=512 --rpc --rpcaddr=0.0.0.0 --rpcport=4163 --rpcapi=eth,web3,net,personal --shh dumpconfig > ~/config.toml
+
+(This will dump all the flags in the configuration file)
+
+
+5. Start Geth:
+--------------
+
+systemctl start geth
+
+systemctl status geth
+
+Check geth console by: 
+
+cd /root/go-ethereum/build/bin/ && ./geth attach
+{Note: for running all geth commands every time change directory to: /root/go-ethereum/build/bin/}
+
+Enjoy!!!!!
+**************************************************************************************************************************************************
+https://medium.com/pactum/geth-node-via-ubuntu-quick-start-90e6cfea7a62
+https://ethereum.stackexchange.com/questions/2058/how-to-update-geth-on-ubuntu-without-using-the-ppa
+
+Download Golang:
+https://golang.org/dl/
+
+Golang Installation Guide:
+https://golang.org/doc/install?download=go1.12.7.linux-amd64.tar.gz
+

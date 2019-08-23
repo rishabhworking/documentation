@@ -1,0 +1,148 @@
+**********************************************************Let's Change GUI of QT Wallet***********************************************************
+Author: Rishbh Shukla
+Date: 17-April-2019, Wednesday
+https://github.com/thehomosapien
+
+Use Case: QT Wallet UI Upgradation of Titancoin and Paymastercoin
+Context: Both coins were running on old QT GUI. I needed to make it look like https://github.com/AnarchistsPrime/Acp2
+
+1. Copy all .ui files to /paymaster/src/qt/forms/
+Error may flash regarding the missing labels in .ui files. Like in my case I had to remention the label for stake. (AnarchistsPrime is POW). Once done it will change the alignments of all widgets in the frame.
+
+2. Now copy following files from AnarchistsPrime/src/qt/ to the src/qt directory. Also copy AnarchistsPrime/src/qt/plugins to you src/qt direcotry.
+
+ActionButton.cpp
+ActionButton.h
+header.cpp
+header.h
+QtWaitingSpinner.cpp
+QtWaitingSpinner.h
+themes.qrc
+
+3. Copy all contents of AnarchistsPrime/src/qt/res to the src/qt/res directory of yours
+Make sure you preserve old icons (src/qt/res/icons and src/qt/res/images), just add new content don't replace you logos and all.
+
+4. Edit the CoinName-qt.pro file located in the root directory of your coin. In my case it was TitanCoin-qt.pro and paymastercoin-qt.pro
+Make following edits:
+
+i) In the Headers Section (HEADERS +=), the first one in the file (roughly at line 175), add these lines to get these files compiled and linked
+
+<last header> \ (don't forget this backslash)	   
+src/qt/plugins/mrichtexteditor/mrichtextedit.h \		
+src/qt/header.h  \		
+src/qt/ActionButton.h \
+
+-------------------------------------------------------
+
+ii) In the Sources Section (SOURCES += ), the second one in the file (roughly at line 266), add these lines to get these files compiled and linked
+
+<last source from qt> \ (don't forget this backslash)		    
+src/qt/plugins/mrichtexteditor/mrichtextedit.cpp \		
+src/qt/header.cpp \		
+src/qt/ActionButton.cpp \
+
+-------------------------------------------------------
+
+iii) In the Resources Section (	RESOURCES += ), the only one in the file (roughly at line 345), add these lines to get these (after the src/qt/bitcoin.qrc \ line) files compiled and linked
+
+src/qt/themes.qrc
+
+-------------------------------------------------------
+
+iv) In the Forms Section (FORMS += ), the first one in the file (roughly at line 348, just next to edit iii) ), add these lines to get these (after the src/qt/bitcoin.qrc \ line) files compiled and linked
+
+<last form.ui> \ (don't forget this backslash)
+src/qt/plugins/mrichtexteditor/mrichtextedit.ui \    		
+src/qt/forms/Header.ui
+
+
+5. Now make the following edits in the src/qt/bitcoingui.cpp
+
+i) Add the following header files after the line #include "wallet.h"
+
+#include "ui_interface.h"		
+#include "init.h"		
+#include "util.h"		
+#include "rpcconsole.h"		
+#include "wallet.h"		
+#include "ActionButton.h"   		
+#include "header.h"
+
+-------------------------------------------------------
+
+ii) Add the following header files after the line #include <QStyle>
+
+#include <QTimer>		
+#include <QDragEnterEvent>		
+#if QT_VERSION < 0x050000 		
+#include <QDesktopServices>		
+#include <QUrl>		
+#else		
+#include <QtCore/QDir>		
+#include <QtCore/QStandardPaths>		
+#endif		
+#include <QStyle>		
+#include <QPainter>		
+#include <QStyleFactory>		
+#include <QDebug>	
+
+-------------------------------------------------------
+
+iii) Add the following line (fucntion call) after the function call gotoOverviewPage(); (Roughly at line 218, at end of funtion defintion BitcoinGUI::BitcoinGUI(QWidget *parent):)
+
+applyTheme("default");
+
+-------------------------------------------------------
+
+iv) Replace the function void BitcoinGUI::createActions() with a new one from AnarchistsPrime (Don't forget to rename coin name and ticker)
+
+-------------------------------------------------------
+
+v) Add the function 'void BitcoinGUI::_addButtonInToolbar' from AnarchistsPrime, add it just before the method 'void BitcoinGUI::createToolBars()'. Then replace the function 'void BitcoinGUI::createToolBars()' with a new one from AnarchistsPrime (Don't forget to rename coin name and ticker)
+
+-------------------------------------------------------
+
+iv) Add the method 'void BitcoinGUI::applyTheme(QString name)' at the end of the file.
+
+-------------------------------------------------------
+
+6. Now make the following edits in the src/qt/bitcoingui.h
+
+i) Add the actionbutton class declaration just after the declaration 'class RPCConsole':
+
+class RPCConsole;
+class ActionButton; 
+
+-------------------------------------------------------
+
+ii) Add the actionbutton pointer declaration just after the declaration 'QAction *openRPCConsoleAction;':
+
+QAction *openRPCConsoleAction;
+ActionButton* actionButton;
+
+-------------------------------------------------------
+
+iii) Add the _addButtonInToolbar function declaration just after the declaration 'void createToolBars();':
+
+void createToolBars();
+void _addButtonInToolbar(QAction *action,QToolBar *toolbar);
+
+-------------------------------------------------------
+
+iv) Add the applyTheme function declaration just after the declaration 'void updateStakingIcon();':
+
+void updateStakingIcon();
+void applyTheme(QString name="default");
+
+-------------------------------------------------------
+
+Now at the end changes the instances where name 'AnarchistsPrime' appears. Also change the logos and other graphical data. Fix the error which may appear during compilation or run time.
+
+Congrats you have made significant beautifications in the wallet. 
+
+
+
+
+
+
+

@@ -1,0 +1,63 @@
+Download the Neo-cli debian package from the github. Also install the dependencies.
+
+https://docs.neo.org/docs/en-us/exchange/general.html
+
+launch neo cli with:
+./neo-cli
+
+Then install all plugins by:
+install <plugin name>
+
+After doing this a new folder will be created by the name of "Plugins", All you need to do is to move all plugins from their respoective folder to the Plugins Directory:
+
+cd Plugins
+cp RpcSystemAssetTracker/Plugins/RpcSystemAssetTracker.dll .
+cp RpcSecurity/Plugins/RpcSecurity.dll .
+cp RpcNep5Tracker/Plugins/RpcNep5Tracker.dll .
+And so on ......
+
+To Enable the RPC run the following command with nohup:
+
+dotnet neo-cli.dll /rpc (Startin the neo-cli daemon with the RPC enabled)
+sudo nohup dotnet neo-cli.dll /rpc > /dev/null 2>&1 &
+
+Configure the RPC from config.json in the same directory as the neo-cli.
+
+Step 1. Create a hidden directory in home foler:
+
+nano /home/ubuntu/.neo
+
+Step 2. Open the neo-cli and create a wallet with command:
+create wallet <path>
+Ex: create wallet /home/ubuntu/.neo/Xbond_Neo_wallet.db3
+(You can keep the extension of the wallet wither db3 or json)
+
+You will be asked to set a password for the created wallet and same password would be used further.
+
+Step 3. Now place the wallet path and the password in config.json. Also set the "IsActive" option to true.
+Ex:
+    "UnlockWallet": {
+      "Path": "/home/ubuntu/.neo/Xbond_Neo_wallet.db3",
+      "Password": "adminpc",
+      "StartConsensus": false,
+      "IsActive": true
+    },
+
+Step 4. Also configure the RPC port and the IP to be binded.
+    "RPC": {
+      "BindAddress": "127.0.0.1",
+      "Port": 10332,
+      "SslCert": "",
+      "SslCertPassword": ""
+    },
+
+Step 5. Install the "screen" and run the neo-cli as a dameon as I wasn't able to do so with nohup.
+Inside neo-cli directory 
+Run: sudo screen ./neo-cli /rpc
+-------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Issue Aug-12-2019>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+The dameon was not able to sync beyond a point. Due to this error: https://github.com/neo-project/neo-cli/issues/434
+Note: Install the plugins in correct format. 
+
+Also download the blockchain copy from https://sync.ngd.network/ and simple put it into the neo-cli directory. The neo-cli will automatically sync the blocks.

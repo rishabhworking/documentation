@@ -1,0 +1,35 @@
+                                ********************************Ultranote Pool********************************
+
+Author: Rishabh Shukla
+Date: 24-April-2019
+
+Repo: https://github.com/xun-project/Ultranote-Nodejs-Pool
+
+1. Clone the repo and go throught the readme file.
+
+2. The main dependenices for the pool are node js, redis server, libssl and boost. So install them from the documentation.
+
+3. You will need to run multiple processes to get it working:
+
+i) The avengerscoind binded to 127.0.0.1:31000
+ii) The avngerscoinwallet binded to 127.0.0.1:8030
+iii) The pool binded to 127.0.0.1:8117
+Note: you can change all the ports but you need to mention same information in the config.json file in the root directory of the pool.
+
+4. There is a different section for the website by the name 'Website'. All the front end portion is there. Edit the config.js in the root directory to connect it to the back end. You will also need to copy this part to one of your severs like Nginx and Apache.
+Note: 'var api' must mention the correct address and port (Like this -> var api = "http://localhost:8117";)
+
+5. Remember after installing redis server you will need to enable Redis-server service, once done, just run it.
+
+sudo systemctl enable redis-server.service
+sudo systemctl start redis-server.service
+
+
+Points to Rememeber:
+
+a) Pool won't work if the network is down and you are running just one node ( and that being the pool node itself)
+b) if command: 'node init.js' does not work, try to run it with sudo
+c) Algorith for the ultranote is different from the cryptonote is different and it is "cryptonote_lightv7"
+d) People can only mine in two ways, first be the GUI wallet and second are the github repos provided at the pool itself.
+
+After many attempts and fixing a lot of shit, I was able to run it. http://151.106.29.124/pool/

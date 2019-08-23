@@ -1,0 +1,59 @@
+RUN this command:
+
+C:\>bcdedit /enum firmware
+
+Output will be like this:
+
+Firmware Boot Manager
+---------------------
+identifier              {fwbootmgr}
+displayorder            {51a9b506-52e8-11e9-9302-84c75a887256}
+                        {bootmgr}
+                        {51a9b504-52e8-11e9-9302-84c75a887256}
+                        {51a9b505-52e8-11e9-9302-84c75a887256}
+                        {51a9b509-52e8-11e9-9302-84c75a887256}
+timeout                 0
+
+Windows Boot Manager
+--------------------
+identifier              {bootmgr}
+device                  partition=\Device\HarddiskVolume2
+path                    \EFI\ubuntu\shimx64.efi
+description             Windows Boot Manager
+locale                  en-US
+inherit                 {globalsettings}
+default                 {current}
+resumeobject            {51a9b50a-52e8-11e9-9302-84c75a887256}
+displayorder            {current}
+                        {51a9b506-52e8-11e9-9302-84c75a887256}
+toolsdisplayorder       {memdiag}
+timeout                 30
+
+Firmware Application (101fffff)
+-------------------------------
+identifier              {51a9b504-52e8-11e9-9302-84c75a887256}
+description             TSSTcorp DVD-RW SH-216BB
+
+Firmware Application (101fffff)
+-------------------------------
+identifier              {51a9b505-52e8-11e9-9302-84c75a887256}
+description             KINGSTON SA400S37240G
+
+Firmware Application (101fffff)
+-------------------------------
+identifier              {51a9b506-52e8-11e9-9302-84c75a887256}
+device                  partition=\Device\HarddiskVolume2
+path                    \EFI\ubuntu\shimx64.efi
+description             ubuntu
+
+Firmware Application (101fffff)
+-------------------------------
+identifier              {51a9b509-52e8-11e9-9302-84c75a887256}
+description             Realtek PXE B02 D00
+
+
+----------------------------------------
+
+Once you make sure where is the ubutu bootloader, assign it was a default bootloader:
+
+bcdedit /set {bootmgr} path \EFI\ubuntu\shimx64.efi

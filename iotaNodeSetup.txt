@@ -1,0 +1,109 @@
+   ===================================================IOTA Node Setup Ubuntu 16.04===================================================    
+
+
+1. sudo apt-get update
+
+2. sudo apt-get upgrade -y
+
+3. Create a directory by name of IOTA
+---------------------------------------
+
+mkdir IOTA
+
+
+4. Download and install the Java 8 OpenJDK
+--------------------------------------------
+
+sudo add-apt-repository universe
+sudo apt-get install -y software-properties-common --no-install-recommends
+sudo apt-get install openjdk-8-jdk
+sudo apt-get update
+
+5. Download the latest IRI Java file
+---------------------------------------
+
+https://github.com/iotaledger/iri/releases
+
+Example: 
+wget https://github.com/iotaledger/iri/releases/download/v1.7.0-RELEASE/iri-1.7.1-RELEASE.jar
+
+
+6. Create the Java variables that'll be used to run the IRI in the Java virtual machine
+----------------------------------------------------------------------------------------
+
+export JAVA_OPTIONS="-XX:+UnlockExperimentalVMOptions -XX:+DisableAttachMechanism -XX:InitiatingHeapOccupancyPercent=60 -XX:G1MaxNewSizePercent=75 -XX:MaxGCPauseMillis=10000 -XX:+UseG1GC"
+
+export JAVA_MIN_MEMORY=2G
+
+export JAVA_MAX_MEMORY=4G
+
+
+7. Create an IRI configuration file in the same directory as your IRI Java file.
+---------------------------------------------------------------------------------
+
+ nano config.ini
+
+(put the following linesin the configuration file)
+
+API_HOST = 0.0.0.0
+API_PORT = 6412
+REMOTE_AUTH = theSunshineofWest:NwYm3NtxtKKVPefh84X82jNu4
+REMOTE_LIMIT_API="removeNeighbors, addNeighbors, interruptAttachingToTangle, attachToTangle, getNeighbors"
+
+
+8. Download the spent-addresses-db directory from this URL
+-----------------------------------------------------------
+
+https://dbfiles.iota.org/?prefix=mainnet/spent-addresses/
+
+Example: 
+wget https://dbfiles.iota.org/mainnet/spent-addresses/2019-07-15_111439_UTC.tgz
+
+tar -xzvf 2019-07-15_111439_UTC.tgz
+
+
+(Note keep the spent-address db foldrer in the IOTA directory too, No special location needed)
+
+
+9. Run the IRI
+---------------
+
+Inside the IOTA folder create a directory "data"
+
+mkdir data
+
+cd data
+
+Then run these commands:
+
+export JAVA_OPTIONS="-XX:+UnlockExperimentalVMOptions -XX:+DisableAttachMechanism -XX:InitiatingHeapOccupancyPercent=60 -XX:G1MaxNewSizePercent=75 -XX:MaxGCPauseMillis=10000 -XX:+UseG1GC"
+
+export JAVA_MIN_MEMORY=2G
+
+export JAVA_MAX_MEMORY=4G
+
+
+The start the IRI:
+
+
+java ${JAVA_OPTIONS} -Xms${JAVA_MIN_MEMORY} -Xmx${JAVA_MAX_MEMORY} -Djava.net.preferIPv4Stack=true -jar /home/ubuntu/IOTA/iri-1.7.1-RELEASE.jar -c /home/ubuntu/IOTA/config.ini
+
+(java ${JAVA_OPTIONS} -Xms${JAVA_MIN_MEMORY} -Xmx${JAVA_MAX_MEMORY} -Djava.net.preferIPv4Stack=true -jar /home/jake/node/iri-${VERSION}.jar)
+           Run the IRI. Change jake to your Linux username and $VERSION to the version of the IRI that you downloaded.
+
+
+10. Check if IRI node is working properly
+-----------------------------------------
+
+sudo apt install curl jq
+
+curl -s http://localhost:6412 -X POST -H 'X-IOTA-API-Version: 1' -H 'Content-Type: application/json' -d '{"command": "getNodeInfo"}' | jq
+
+
+
+ sudo nohup  ./nodeos  > /dev/null 2>&1 &
+
+java ${JAVA_OPTIONS} -Xms${JAVA_MIN_MEMORY} -Xmx${JAVA_MAX_MEMORY} -Djava.net.preferIPv4Stack=true -jar /home/ubuntu/IOTA/iri-1.7.0-RELEASE.jar -c /home/ubuntu/IOTA/config.ini
+
+
+

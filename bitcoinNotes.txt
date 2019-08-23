@@ -1,0 +1,19 @@
+Mining is used to prevent double spending of btc.
+
+How double Spend is stopped:
+1. Rather than writng directly to the chain, nodes store transactions in a memory pool.
+Each BTC Node on network is allocated a small temp-memory known as Mempool.
+
+Now say we have two transactions spending same btc, half nodes has transaction A and half nodes has transaction B.
+Now all the nodes will try to write(add) that transaction to the blockchain.
+
+Condition 1: Suppose one node was successfully able to add the trasaction to chain (and it was transcation A). Now other nodes will accept it and transaction B will be rejected.
+
+Condition 2: As BTC network is quite big, suppose both transaction A and B were mined by some two differnt distant nodes and added to blockchain. In this case the transaction with more confirmations will be added and other one will be rejected.
+NOTE: At same time their can be many differnt copies of blockchain with minor changes, these are sorted out by number of confirmations or more node 
+
+----------------------------------
+
+CPU Miner:
+
+./cpuminer -o http://127.0.0.1:18778 -u admin -p adminpc -a x11 --no-longpoll --no-getwork --no-stratum --coinbase-addr=pRLidsdTDCCDpiBCa7vaSQm7R2LRZgfUy1

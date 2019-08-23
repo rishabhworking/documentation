@@ -1,0 +1,20 @@
+   ===================================================Geth(ETC) Manual Installation Ubuntu 16.04===================================================
+
+1. Get the Binaries from:
+-------------------------
+
+https://github.com/ethereumproject/go-ethereum/releases
+
+
+
+2. Uncompress and Unzip the binaries:
+-------------------------------------
+
+gzip -dc geth-classic-v6.0.6-linux.tar.gz | tar -xzvf -
+
+
+
+3. Run Geth with Nohup:
+-----------------------
+ sudo nohup ./geth --fast --cache=512 --rpc --rpcport=4163 --rpcapi=eth,web3,net,personal --rpccorsdomain=127.0.0.1
+

@@ -1,0 +1,87 @@
+                                ********************************Ultranote Explorer********************************
+
+Author: Rishabh Shukla
+Date: 24-April-2019
+
+Repo: https://github.com/xun-project/UltraNote-Blockexplorer
+
+"May the Best Man Win" as this thing is full of mess. Don't be shy to smoke some weed before you get started with this shit. You will need it.
+
+NOTE: Kid you will need to run the "Ultranote Mining Pool" before you get you hands on the 'lovely explorer'. Shuu! go away if not done.
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+1. Clone the repo and copy it your server, be it Apache, Nginx or something else as it's just some front end stuff making API calls to the Pool and the daemon you are running.
+
+----------------------------------------------------------------
+
+2. Now run the avengercoind binded to localhost with some 5 digit port you cherish. (127.0.0.1:31000)
+
+----------------------------------------------------------------
+
+3. These are your baes from config.js:
+Bae 1: var api
+Bae 2: var apiList 
+Bae 3: var networkStat
+
+Now treat them like princesses and mention the correct value. Like this:
+
+var api = 'http://localhost:31000';
+var apiList = ["http://localhost:31000"];
+var networkStat = {
+        "avg": [
+                ["51.106.29.124/pool/", "http://151.106.29.124:8117/stats"],
+
+    ]
+};
+
+here the 'api' and 'apiList' talks to the local daemon or any remote daemon if you are in affair. While the networkStat just pick some lines of data from the pool. As you can see it has two parts:
+
+a) 51.106.29.124/pool/ ( this is the url of your pool, I had no fancy of getting a domain name so I kept it generic)
+b) http://151.106.29.124:8117 ( this is the where your pool listen for the API requests, we are hitting the 'stats' api at the end, there are many more)
+Note: you will need to mention the correct values as per your pool. don't turn the things into blunder bro or broin.
+
+----------------------------------------------------------------
+
+4. Now comes the shit part, the where you wil need to fix things you never fixed before ( I am not talking about your brains bro). "The path problem"
+
+i) index.html
+
+I concluded that I was using apache and the dev of the explorer didn't designed it with apache in mind. He must be rich. So we will need to correct a lot of things.
+
+* Get start by fixing the /css
+<link href="/css/themes/white/style.css" rel="stylesheet" id="theme_link"> -> <link href="css/themes/white/style.css" rel="stylesheet" id="theme_link">
+There are instances which mention forward slash before css, and hence at first run you will get just html data if you don't fix the path.
+
+* Now fix the /config.js
+
+Roughly Line 16: <script src="/config.js"></script> --> <script src="config.js"></script>
+This one is really important as the config.js hold a lot of weight.
+
+* Also remove / from these: (roughly lines 21 to 23)
+
+	var blockchainExplorer 	= "/?hash={id}#blockchain_block";
+	var transactionExplorer = "/?hash={id}#blockchain_transaction";
+	var paymentIdExplorer 	= "/?hash={id}#blockchain_payment_id";
+
+
+Correct: 
+	var blockchainExplorer 	= "?hash={id}#blockchain_block";
+	var transactionExplorer = "?hash={id}#blockchain_transaction";
+	var paymentIdExplorer 	= "?hash={id}#blockchain_payment_id";
+
+* Now if any other function isn't running well then look for the 'path problem" that is the / at wrong palce. It's also there in pages/api.html ( /q to q)
+To fight with the path problme you can use the console provided with browser
+----------------------------------------------------------------
+
+5. This thing was the biggest headache in the whole process as I wasn't not able to get API page working.
+
+Don't be happy if you have curl installed in your PC. You will need to install curl for your PHP version. If you don't this, even with proper path and running daemon and pool, the API page won't work for nothing.
+
+----------------------------------------------------------------
+
+6.  Now after fixing all you will need to fix your luck!
+
+
+I got it running at http://151.106.29.124/explorer/
+

@@ -1,0 +1,146 @@
+##########################################################################################################################################
+
+Ritocoin is a digital peer to peer network for the facilitation of asset transfer. It uses X21s Algorithm. 16 algorithms shuffled, followed by rest 5 algorithms. It is a fork of Ravencoin.
+
+Main Use: For implementing assets along with regular transactions. 
+
+What we cloned: Master branch, tag 2.2.2.0
+
+Operating System used: Ubuntu 16.04.6 LTS x64
+
+Processor: Intel(R) Core(TM) i5-3570 CPU @ 3.40GHz
+
+Memory: 7.6 GiB
+https://github.com/bitcoin/bitcoin/issues/12876
+create release folder, put all files inside it
+sudo apt install nsis
+makensis share/setup.nsi (in src)
+also edit setup.nsi
+
+sudo update-alternatives --config x86_64-w64-mingw32-gcc
+sudo update-alternatives --config x86_64-w64-mingw32-g++
+
+##########################################################################################################################################
+
+Step 1. Cloning the Ritocoin to the local machine (we can also fork it to our repository first, and then clone).
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Step 2. Changing Names in files:
+
+find ./ -type f -readable -writable -exec sed -i "s/Ritocoin/Valuero/g" {} \;
+find ./ -type f -readable -writable -exec sed -i "s/RitoCoin/Valuero/g" {} \;
+find ./ -type f -readable -writable -exec sed -i "s/ritocoin/valuero/g" {} \;
+find ./ -type f -readable -writable -exec sed -i "s/ritocoind/Valuerod/g" {} \;
+find ./ -type f -readable -writable -exec sed -i "s/RITO/VLR/g" {} \;
+find ./ -type f -readable -writable -exec sed -i "s/vlr/valuero/g" {} \;
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Step 3. Renaming files:
+
+find . -exec rename 's/rito/valuero/' {} ";"
+
+Note: Renaming files is also an important part as not doing so will cause erros during compilation.
+
+After Doing step 2 and 3, make a test compilation and fix issues if any.
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Step 4. Genesis Blocks:
+
+We will have to figure out three genesis blocks. One for Mainet, one for Testnet and one for Regtestnet. 
+
+i) Change the public key associated with Genesis Block (I forgot it in this fork)
+ii) Change the Timestamp and Epoch Time for Genesis Blocks (All three, try to keep constant difference with them)
+iii) Then finally copy and paste the code which is used to find the Genesis Block.
+iv) Run the all the daemons one by one to get the correct Genesis Block Hash, Merkel Hash and Nonce.
+
+CODE: 
+
+NOTE: Place this code just before the method call: genesis = CreateGenesisBlock(); in file chainparams.cpp for all the three networks.
+Example: genesis = CreateGenesisBlock(nGenesisTime, 15615880, 0x1e00ffff, 2, 5000 * COIN);
+
+/*
+	uint32_t nGenesisTime = 1543578342;
+        arith_uint256 test;
+        bool fNegative;
+        bool fOverflow;
+        test.SetCompact(0x1e00ffff, &fNegative, &fOverflow);
+        std::cout << "Test threshold: " << test.GetHex() << "\n\n";
+        int genesisNonce = 0;
+        uint256 TempHashHolding = uint256S("0x0000000000000000000000000000000000000000000000000000000000000000");
+        uint256 BestBlockHash = uint256S("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        for (int i=0;i<40000000;i++) {
+            genesis = CreateGenesisBlock(nGenesisTime, i, 0x1e00ffff, 2, 5000 * COIN);
+            //genesis.hashPrevBlock = TempHashHolding;
+            consensus.hashGenesisBlock = genesis.GetHash();
+            arith_uint256 BestBlockHashArith = UintToArith256(BestBlockHash);
+            if (UintToArith256(consensus.hashGenesisBlock) < BestBlockHashArith) {
+                BestBlockHash = consensus.hashGenesisBlock;
+                std::cout << BestBlockHash.GetHex() << " Nonce: " << i << "\n";
+                std::cout << "   PrevBlockHash: " << genesis.hashPrevBlock.GetHex() << "\n";
+        	std::cout << "hashGenesisBlock to 0x" << BestBlockHash.GetHex() << std::endl;
+        	std::cout << "Genesis Nonce to " << genesisNonce << std::endl;
+        	std::cout << "Genesis Merkle " << genesis.hashMerkleRoot.GetHex() << std::endl;
+            }
+            TempHashHolding = consensus.hashGenesisBlock;
+            if (BestBlockHashArith < test) {
+                genesisNonce = i - 1;
+                break;
+            }
+            //std::cout << consensus.hashGenesisBlock.GetHex() << "\n";
+        }
+        std::cout << "\n";
+        std::cout << "\n";
+        std::cout << "\n";
+        std::cout << "hashGenesisBlock to 0x" << BestBlockHash.GetHex() << std::endl;
+        std::cout << "Genesis Nonce to " << genesisNonce << std::endl;
+        std::cout << "Genesis Merkle " << genesis.hashMerkleRoot.GetHex() << std::endl;
+        std::cout << "\n";
+        return;
+*/
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Step 5. Now change all the other important things in chainparams.cpp like:
+* the Pointer to Character Message bits, 
+* All kind of address identifiers: base58Prefixes[PUBKEY_ADDRESS] , base58Prefixes[SCRIPT_ADDRESS], base58Prefixes[SECRET_KEY],  base58Prefixes[EXT_PUBLIC_KEY], base58Prefixes[EXT_SECRET_KEY].
+* P2P Port (chainprams.cpp) and RPC Port (chainparamsbase.cpp)
+* Also mention Epoch time for Asset Deplyment:
+        consensus.vDeployments[Consensus::DEPLOYMENT_ASSETS].nStartTime = 1556700630; // Wednesday, May 1, 2019 8:50:30 AM
+        consensus.vDeployments[Consensus::DEPLOYMENT_ASSETS].nTimeout = 1588323030; // Friday, May 1, 2020 8:50:30 AM
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Step 6. Once everything is done in chainparams.cpp, We need to fix the rewards in validation.cpp
+
+
+Confirmation: concensus/concensus.h (add n-1 confirmations, say your target is 150, so put 149 in the parameters)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

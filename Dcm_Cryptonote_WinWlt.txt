@@ -1,0 +1,144 @@
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Error 1.
+---------
+Could not find a package configuration file provided by "Qt5Gui" with any
+of the following names:
+
+Qt5GuiConfig.cmake
+qt5gui-config.cmake
+
+Solution: 
+----------
+Remove Line 13 from CMakeLists.txt in UltraNoteWallet
+set (CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.6.0\\5.6\\msvc2013_64\\")
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+Error 2.
+---------
+C:\Users\ilove\Documents\Ultranote GUI\ultranotewallet\src\Worker.cpp(55): error C2039: 'cn_slow_hash': is not a member of 'Crypto' [C:\Users\ilove\Documents\Ultranote GUI\ultranotewallet\build\ultranotewallet.vcxproj]
+
+C:\Users\ilove\Documents\Ultranote GUI\ultranotewallet\src\Worker.cpp(55): error C3861: 'cn_slow_hash': identifier not found [C:\Users\ilove\Documents\Ultranote GUI\ultranotewallet\build\ultranotewallet.vcxproj]
+
+Solution: 
+----------
+Edit Line 55 in ultranotewallet\src\Worker.cpp
+
+Crypto::cn_slow_hash(context, localJob.blob.data(), localJob.blob.size(), hash); 
+-->>
+Crypto::cn_slow_hash_v7(context, localJob.blob.data(), localJob.blob.size(), hash);
+
+{
+    Worker.cpp includes Worker.h and Worker.h in turn include ultranote\src\crypto\hash.h . But there is no declaration for function "cn_slow_hash" . Delcrations are     for two functions: 
+
+    friend inline void cn_slow_hash_v6(cn_context &, const void *, size_t, Hash &); //Line 48
+    friend inline void cn_slow_hash_v7(cn_context &, const void *, size_t, Hash &); //Line 49
+}
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+Error 3.
+---------
+C:\Users\ilove\Documents\Ultranote GUI\ultranotewallet\src\gui\SendMessageFrame.cpp(162): error C2397: conversion from 'quint64' to 'int64_t' requires a narrowing conversion [C:\Users\ilove\Documents\Ultranote GUI\ultranotewallet\build\ultranotewallet.vcxproj]
+
+Solution: 
+----------
+
+Edit Line 23 in ultranotewallet\src\gui\SendMessageFrame.cpp
+
+Q_DECL_CONSTEXPR quint64 MESSAGE_AMOUNT = 1000; -->> Q_DECL_CONSTEXPR int64_t MESSAGE_AMOUNT = 1000;
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Error 4.
+---------
+cryptonote.lib(WalletLegacy.obj) : error LNK2019: unresolved external symbol "bool __cdecl crypto::ElectrumWords::bytes_to_words(struct Crypto::SecretKey const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" 
+
+(?bytes_to_words@ElectrumWords@crypto@@YA_NAEBUSecretKey@Crypto@@AEAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std
+@@AEBV56@@Z) referenced in function "public: virtual bool __cdecl CryptoNote::WalletLegacy::getSeed(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &)" 
+
+(?getSeed@WalletLegacy@CryptoNote@@UEAA_NAEAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z) [C:\Users\ilove\Do
+cuments\Ultranote GUI\ultranotewallet\build\ultranotewallet.vcxproj]
+
+C:\Users\ilove\Documents\Ultranote GUI\ultranotewallet\build\Release\ultranotewallet.exe : fatal error LNK1120: 1 unresolved externals [C:\Users\ilove\Documents\Ultranote GUI\ultranotewallet\build\ultranotewallet.vcxproj]
+
+Solution: 
+----------
+
+a) ultranote\src\WalletLegacy\WalletLegacy.cpp
+Comment Lines 226 to 239
+
+bool WalletLegacy::getSeed(std::string& electrum_words)
+{
+	std::string lang = "English";
+	crypto::ElectrumWords::bytes_to_words(m_account.getAccountKeys().spendSecretKey, electrum_words, lang);
+
+	Crypto::SecretKey second;
+	keccak((uint8_t *)&m_account.getAccountKeys().spendSecretKey, sizeof(Crypto::SecretKey), (uint8_t *)&second, sizeof(Crypto::SecretKey));
+
+	sc_reduce32((uint8_t *)&second);
+
+	return memcmp(second.data, m_account.getAccountKeys().viewSecretKey.data, sizeof(Crypto::SecretKey)) == 0;
+}
+----------------------------------------------------
+
+b) ultranote\src\CryptoNoteCore\Account.cpp
+
+Comment Lines 59 to 84
+
+  // rng for generating second set of keys is hash of first rng.  means only one set of electrum-style words needed for recovery
+  Crypto::SecretKey second;
+  keccak((uint8_t *)&first, sizeof(Crypto::SecretKey), (uint8_t *)&second, sizeof(Crypto::SecretKey));
+
+  generate_m_keys(m_keys.address.viewPublicKey, m_keys.viewSecretKey, second, two_random ? false : true);
+
+  struct tm timestamp;
+  timestamp.tm_year = 2016 - 1900;  // year 2016
+  timestamp.tm_mon = 5 - 1;  // month May
+  timestamp.tm_mday = 30;  // 30 of May
+  timestamp.tm_hour = 0;
+  timestamp.tm_min = 0;
+  timestamp.tm_sec = 0;
+
+  if (recover)
+   {
+     m_creation_timestamp = mktime(&timestamp);
+   }
+   else
+   {
+     m_creation_timestamp = time(NULL);
+   }
+  return first;
+}
+----------------------------------------------------
+
+c) ultranote\src\SimpleWallet\Account.cpp 
+
+Comment Lines 563 to 577
+
+bool simple_wallet::seed(const std::vector<std::string> &args/* = std::vector<std::string>()*/) {
+  std::string electrum_words;
+  bool success = m_wallet->getSeed(electrum_words);
+
+  if (success)
+   {
+    std::cout << "\nPLEASE NOTE: the following 25 words can be used to recover access to your wallet. Please write them down and store them somewhere safe and secure. Please do not store them in your email or on file storage services outside of your immediate control.\n";
+    std::cout << electrum_words << std::endl;
+   }
+   else
+   {
+    fail_msg_writer() << "The wallet is non-deterministic and doesn't have mnemonic seed.";
+   }
+   return true;
+}
+
+----------------------------------------------------
+
+d) ultranote\include\IWalletLegacy.h
+
+Comment Line 148: virtual bool getSeed(std::string& electrum_words) = 0;
+
+----------------------------------------------------
+
+e) ultranote\src\WalletLegacy\WalletLegacy.h
+
+Comment Line 99: bool getSeed(std::string& electrum_words);
+
+----------------------------------------------------
+

@@ -1,0 +1,41 @@
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1. Error in Ubuntu terminal:
+-----------------------------
+
+Directory: coin_name/src [that is the root directory of coin]
+
+commands: qmake && make [compilation of linux QT wallet]
+
+Error Output:
+
+/usr/bin/ld: BFD (GNU Binutils for Ubuntu) 2.26.1 internal error, aborting at ../../bfd/coffcode.h:999 in handle_COMDAT
+
+/usr/bin/ld: Please report this bug.
+
+collect2: error: ld returned 1 exit status
+Makefile:320: recipe for target 'paymastercoin-qt' failed
+make: *** [paymastercoin-qt] Error 1
+
+****SOLUTION****
+
+Remove all the contents of build directory "coin_name/src/build"
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+2. Error in gitan builder:
+-----------------------------
+
+The compiler was not able to find out libleveldb.a && libmemenv.a 
+
+****SOLUTION****
+
+In the file Yourcoin_Name-qt.pro
+
+This line (roughly line 136) is comment, just uncomment it.
+ # genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX TARGET_OS=OS_WINDOWS_CROSSCOMPILE $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libleveldb.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libmemenv.a
+
+to
+
+genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX TARGET_OS=OS_WINDOWS_CROSSCOMPILE $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libleveldb.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libmemenv.a
+

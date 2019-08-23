@@ -1,0 +1,33 @@
+./monerod
+
+./monero-wallet-rpc --rpc-login adminpc:admin --rpc-bind-port 3009  --rpc-bind-ip 172.31.20.117 --wallet-file xbondwallet --password adminpc  --confirm-external-bind
+
+
+curl -u admin:admin --digest -X POST http://13.235.159.58:3009/json_rpc -d '{"jsonrpc":"2.0","id":"0","method":"'get_version'"}' -H 'Content-Type: application/json'
+
+(To use curl with Postman use the Authorisation tab to set username and password)
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+1. Run the monero daemon in background:
+
+./monerod
+(Wait for the monerod to download all the blocks. The size of chain at the time of writng this documents is around 72 Gigs.)
+
+
+
+2. Now open the monero CLI and create a wallet by any name:
+
+It will ask you for the wallet name and password. It will store the newly wallet in your current working directory.
+(once wallet is created exit the monero-wallet-cli)
+
+
+
+3. Configure the monero-wallet-rpc for being used for RPC calls:
+
+./monero-wallet-rpc --rpc-login WREyq2JOG5ShnEg:bv3$U2p-66W*42#TYWsGQLa$W --rpc-bind-port 3535  --rpc-bind-ip 5.189.181.158 --wallet-file exchangewallet --password libran23  --confirm-external-bind
+
+4. Check the if the RPC is working or not:
+curl -u WREyq2JOG5ShnEg:bv3$U2p-66W*42#TYWsGQLa$W --digest -X POST http://5.189.181.158:3535/json_rpc -d '{"jsonrpc":"2.0","id":"0","method":"'get_version'"}' -H 'Content-Type: application/json'
+
+

@@ -1,0 +1,58 @@
+                                 <Ultranote Command Line Interface Wallet for Windows, Used for RPC on windows server>
+
+#Author: Rishabh Shukla
+#Day & Date: Saturday, 6-April-2019
+#https://github.com/rishabhworking
+
+** Refer Official Documentation at: https://github.com/xun-project/UltraNote/blob/master/doc/paymentgate.md
+** All the commands were run in the same directory where bianries were extracted (I used C:\Users\ilove\Downloads\UltraNoteWallet-CLI-1.0.13\)
+
+1. Download the ultranote binaries from: https://ultranote.org/UltraNoteWallet-CLI-1.0.13.zip
+2. Unzip them at desired location. (I did at C:\Users\ilove\Downloads\UltraNoteWallet-CLI-1.0.13)
+3. Create a configuration file paymentgate.conf (or whatever name you like but you'll need to change it at each instance then)
+4. Now edit the configuration file, and put atleast the minimal configuration required. You can add other fields like rpc-user & rpc-password.
+
+I created the configuration file at the same location where I extracted binaries: C:\Users\ilove\Downloads\UltraNoteWallet-CLI-1.0.13\
+
+It is minimal confiuration:
+
+		container-file=C:\Users\ilove\Downloads\UltraNoteWallet-CLI-1.0.13\container.iwallet
+		bind-port=8070
+		bind-address=127.0.0.1
+		container-password=sectet123
+		log-file=C:\Users\ilove\Downloads\UltraNoteWallet-CLI-1.0.13\walletd.log
+		local=1
+
+Available configuration options:
+
+		container-file=	            # REQUIRED. Path to wallet container
+		container-password= 	    # REQUIRED. Password
+		data-dir=/srv/ultranote	    # Where blockchain data is stored. Defaults to /home/user/.UltraNote
+		bind-address=0.0.0.0	    # Use server IP or 127.0.0.1
+		bind-port=8070		    # Port
+		rpc-user=                   # Auth user for RPC service
+		rpc-password=               # Password for RPC service
+		server-root=/srv/ultranote  # Working directory
+		log-level=                  # Log level 0-4
+		local=1                     # Use In-process node
+		daemon-address=localhost    # remote daemon address, don't use it with in-process mode
+		daemon-port=30000           # 
+
+5. Now generate the wallet container (a file which will store all addresses and their respecitve public and private keys). This is the command: 
+
+walletd --config=paymentgate.conf --generate-container
+
+If everythig goes well you will be greeted by such output:
+
+		2019-Apr-06 14:34:29.662425 INFO [main] PaymentService  v1.0.13.ultra0013(0.1-g72946d9)
+		2019-Apr-06 14:34:29.662425 INFO [generateNewWallet] Generating new wallet
+		2019-Apr-06 14:34:29.662425 INFO [generateNewWallet] New wallet is generated. Address: Xun3rz8XavB8jXajXpguk9YavGXkFo4TajS2GhLNdFAtFsm6a5yx8frF2oQYBnLXNPZPh4Zjq5e82M9ED3fpDWyG5CxgSpngym
+		2019-Apr-06 14:34:29.693681 INFO [generateNewWallet] Wallet is saved
+
+6. Now comes the last step, which is to run the walletd service using following command: 
+
+walletd --config=paymentgate.conf
+
+7. Congrats!! you have a running CLI wallet for ultranote.
+
+

@@ -1,0 +1,157 @@
+##########################################################################################################################################
+
+NYE is a digital peer to peer network with POW/POS and Masterndoe. It is a fork of PIVX.
+
+Main Use: As a POS - Masternode cryptocurrency. 
+
+What we cloned: Available code of NYE (It's derived from https://github.com/PIVX-Project/PIVX/tree/v2.3.1)
+
+Operating System: Ubuntu 16.04.6 LTS x64
+
+Processor: Intel(R) Core(TM) i5-3570 CPU @ 3.40GHz
+
+Memory: 7.6 GiB
+
+##########################################################################################################################################
+
+Step 1. Cloning the NYE/PIVX to the local machine (we can also fork it to our repository first, and then clone).
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Step 2. Changing Names in files:
+
+find ./ -type f -readable -writable -exec sed -i "s/NYECOIN/YUCOIN/g" {} \;
+find ./ -type f -readable -writable -exec sed -i "s/nyecoin/yucoin/g" {} \;
+find ./ -type f -readable -writable -exec sed -i "s/NYE/YUC/g" {} \;
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Step 3. Renaming files:
+
+find . -exec rename 's/nyecoin/yucoin/' {} ";"
+
+Note: Renaming files is also an important part as not doing so will cause erros during compilation.
+
+After Doing step 2 and 3, make a test compilation and fix issues if any.
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Step 4. Alert and SporkKey
+
+We will need to place new alert keys (put public keys in cod and keep prviate keys safe)
+
+Generate Key-Pairs:
+
+openssl ecparam -genkey -name secp256k1 -out alertkey.pem
+openssl ec -in alertkey.pem -text > alertkey.hex
+openssl ecparam -genkey -name secp256k1 -out testnetalert.pem
+openssl ec -in testnetalert.pem -text > testnetalert.hex
+openssl ecparam -genkey -name secp256k1 -out genesiscoinbase.pem
+openssl ec -in genesiscoinbase.pem -text > genesiscoinbase.hex
+openssl ecparam -genkey -name secp256k1 -out strSporkKey.pem
+openssl ec -in strSporkKey.pem -text > strSporkKey.hex
+openssl ecparam -genkey -name secp256k1 -out teststrSporkKey.pem
+openssl ec -in teststrSporkKey.pem -text > teststrSporkKey.hex
+
+Read Public Keys:
+
+cat genesiscoinbase.hex
+cat testnetalert.hex
+cat alertkey.hex
+cat strSporkKey.hex
+cat teststrSporkKey.hex
+
+Finally Place them at their respective places, and we are good to go.
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Step 5. Genesis Blocks:
+
+We will have to figure out three genesis blocks. One for Mainet, one for Testnet and one for Regtestnet. 
+
+i) Change the public key associated with All Genesis Block (both Mainnet and Testnet)
+ii) Change the Timestamp and Epoch Time for Genesis Blocks (All three, try to keep constant difference with them)
+iii) Change all Alert keys for both Mainnet, Testnet and Regtestnet (5 keys, 3 vAlertPubKey and 2 strSporkKey)
+iv) Then finally copy and paste the code which is used to find the Genesis Block.
+iv) Run the all the daemons one by one to get the correct Genesis Block Hash, Merkel Hash and Nonce.
+
+CODE: 
+
+NOTE: Place this code just before the method call: hashGenesisBlock = genesis.GetHash(); in file chainparams.cpp for all the three networks.
+
+/*
+        if(genesis.GetHash() != uint256("0x"))
+        {
+              printf("MSearching for genesis block...\n");
+              uint256 hashTarget;
+              hashTarget.SetCompact(genesis.nBits);
+              while(uint256(genesis.GetHash()) > uint256(hashTarget))
+              {
+                  ++genesis.nNonce;
+                  if (genesis.nNonce == 0)
+                  {
+                      printf("Mainnet NONCE WRAPPED, incrementing time");
+                      std::cout << std::string("Mainnet NONCE WRAPPED, incrementing time:\n");
+                      ++genesis.nTime;
+                  }
+                  if (genesis.nNonce % 10000 == 0)
+                  {
+                      printf("Mainnet: nonce %08u: hash = %s \n", genesis.nNonce, genesis.GetHash().ToString().c_str());
+                  }
+              }
+              printf("Mainnet block.nTime = %u \n", genesis.nTime);
+              printf("Mainnet block.nNonce = %u \n", genesis.nNonce);
+              printf("Mainnet block.hashMerkleRoot: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+              printf("Mainnet block.GetHash = %s\n", genesis.GetHash().ToString().c_str());
+        }
+*/
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Step 5. Now change all the other important things in chainparams.cpp like:
+* the Pointer to Character Message bits, 
+* All kind of address identifiers: base58Prefixes[PUBKEY_ADDRESS] , base58Prefixes[SCRIPT_ADDRESS], base58Prefixes[SECRET_KEY],  base58Prefixes[EXT_PUBLIC_KEY], base58Prefixes[EXT_SECRET_KEY].
+* P2P Port (chainprams.cpp) and RPC Port (chainparamsbase.cpp)
+* Also mention last Proof of Work block(after it chain will switch to POS):
+nLastPOWBlock = 500;
+
+* strMasternodePoolDummyAddress
+
+MainNet:
+"Yg7LVMahojABn7cxsEZdRHGdvLyVsCFxE3";
+(7rrNuHrosU3p6PQQW51arkEczepji82LmyHva53hER6sDcZwCgMc)
+
+TestNet:
+"yhRgt7n2LbZjFRp21k8ufwCSd9CGrchWmM";
+(HP5iDVBxkZrXgciu2g8nsHr9kP3mhd7fy5UyDuxedPFAimHtwDgC)
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Step 6. Once everything is done in chainparams.cpp, We need to fix the rewards in main.cpp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

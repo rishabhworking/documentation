@@ -1,0 +1,23 @@
+                                                        Debian Binary Packages Setup for Zcash
+
+sudo apt-get install apt-transport-https wget gnupg2
+
+wget -qO - https://apt.z.cash/zcash.asc | sudo apt-key add -
+
+echo "deb [arch=amd64] https://apt.z.cash/ jessie main" | sudo tee /etc/apt/sources.list.d/zcash.list
+
+sudo apt-get update && sudo apt-get install zcash
+
+zcash-fetch-params
+
+now you can run zcashd & zcash-cli from anywhere
+
+Note: you can locate zcash binaries in /usr/bin and you can copy them to the home directory
+
+The edit the configuration file and start the node.
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+
+https://zcash.readthedocs.io/en/latest/rtd_pages/install_debian_bin_packages.html

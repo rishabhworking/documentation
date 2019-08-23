@@ -1,0 +1,24 @@
+Author: Rishabh Shukla
+Day & Day: 31-March-2019
+
+Type: Block Explorer
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+Error 1: Block Explorer stopped after a certain point (It downloaded 800k blocks out of 1 million blocks) and then the "script:node scripts/sync.js index update" stopped working.
+
+Cause: It was caused due to the 32-bit version of MonogDB. The 32-bit version allows the database size upto 2 Gigs only.
+Cause: The 32-bit version of MongoDB was installed because the node was running on 32-bit version of Ubuntu 16.04.06.
+
+Solution: Install the 64 version of Ubuntu and MongoDB. Then run the explorer.
+
+Precaution: Check wether Ubuntu installation is 32-bit or 64-bit with this command: sudo uname -i
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+Error 2: Block Explorer wasn't able to connect to the coin's daemon even if the correct RPC credentials were provided. It also flashed HTML and JS code on the screen while Explorer was fired up with command: npm start
+
+Cause: It was caused due to 'five digit' RPC Port (like 56418). Explorer seems not be to good at handeling RPC ports more than 4 digits.
+
+Solution: Stop the daemon. Edit the configuration file. Put a 4 digit RPC Port. And then start the daemon again with -txindex -reindex flags.
+
+Precaution: Always prefer 4 digit RPC port for coin daemons which are meant to be hit by Explorer's RPCs.
+---------------------------------------------------------------------------------------------------------------------------------------------
