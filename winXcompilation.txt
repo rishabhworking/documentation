@@ -1,0 +1,50 @@
+General Dependencies:
+
+sudo apt-get install build-essential libtool autotools-dev automake pkg-config bsdmainutils curl nsis
+
+
+Mingw 64-bit Compiler for Windows:
+
+sudo apt-get install g++-mingw-w64-x86-64 mingw-w64-x86-64-dev
+
+
+Mingw 32-bit Compiler for Windows:
+
+sudo apt-get install g++-mingw-w64-i686 mingw-w64-i686-dev
+
+
+Update the alternative to "posix":
+
+sudo update-alternatives --config x86_64-w64-mingw32-g++
+sudo update-alternatives --config x86_64-w64-mingw32-gcc
+
+
+Building for 64-bit Windows:
+
+1. PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g')
+2. cd depends
+3. make HOST=x86_64-w64-mingw32
+4. cd ..
+5. ./autogen.sh
+6. CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/
+7. make
+8. make deploy (optional for generating installer)
+
+PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') && cd depends && make HOST=x86_64-w64-mingw32 && cd .. && ./autogen.sh && CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && make
+
+
+
+Building for 32-bit Windows:
+
+1. PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g')
+2. cd depends
+3. make HOST=i686-w64-mingw32
+4. cd ..
+5. ./autogen.sh
+6. CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/
+7. make
+8. make deploy (optional for generating installer)
+
+PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') && cd depends && make HOST=i686-w64-mingw32 && cd .. && ./autogen.sh && CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && make
+
+
