@@ -1,0 +1,84 @@
+# General Changes
+=================
+
+Name Changes
+Port Changes
+Public Key Changes (if any)
+
+
+# Concensus Changes
+==================
+
+Address Prefix: X
+Supply Changes: 50,000,000
+Reward Changes: Custom (Both Vote/Candidate Reward and Super Representative Reward)
+Number of Top Super Representatives Candidates and Super Representatives. (Currently Top Super Representatives Candidates = 127, Super Representatives = 27)
+
+Precation: "SuperRepresentatives Candidates", "Top SuperRepresentatives Candidates" and "SuperRepresentatives" are different.
+
+"SuperRepresentatives Candidates" = Any interger N.
+"Top SuperRepresentatives Candidates"= Top 127 out of N.
+"SuperRepresentatives" = Top 27 out of 127.
+
+1. Anyone can create a Tron account and apply for the SuperRepresentative. When applying, 9999 TRX will be burned from the applicant’s account. Once successful, such account can join the SR election.
+Find out: Who will approve this application, whole network or any/some specific node/s?
+Find out: How these 9999 TRX are burned. Generally Burning means send amount to an address whose private key can't be obtained.
+
+2. Once You are SuperRepresentative, any other account or you yourself can vote for you.
+Note: TRON Power (denoted as TP) is needed to vote and the amount of TP depends on the voter’sfrozen assets (TRX). TP is calculated in the following way:
+'1 TP  = 1 TRX frozen to get bandwidth'
+Note: You can't unfreeze the TP for next 3 days. Once you unfreeze your TRX, the votes you gave will be removed too. 
+
+3. There can be any number of "SuperRepresentatives Candidates". At moment there are 238 "SuperRepresentatives Candidates" in Tron network.
+
+4. Twist:
+Only 127 out of these 238 are valuable. The 'Candiate Reward' is shared between top 127 "SuperRepresentatives Candidates".
+Only 27 out of above 127 are "SuperRepresentatives". The 'Super Representative Reward' is shared between these 27 representatives.
+People can continuously vote, the ranking changes every round where 1 Round = 6 hours that is four times a day.
+
+5. Reward Distribution:
+
+Vote Reward/Candidate Reward: This reward is distributed every round, 1 Round = 6 hours among the "Top SuperRepresentatives Candidates"(top 127).
+Reward: 16 TRX per block.
+Reward Each Round: 16 × 20 × 60 × 6 = 115,200 TRX
+Reward Each Year: 16 × 20 × 60 × 24 × 365 = 168,192,000 TRX
+The reward will be split in accordance with the vote weighteach candidate receives.
+
+Block Reward/Super Representative Reward: This reward is also distributed every round, 1 Round = 6 hours among the "SuperRepresentatives"(top 27).
+Reward: 32 TRX per block.
+Reward Each Round: 32 × 20 × 60 × 6 = 230,400 TRX
+Reward Each Year: 32 × 20 × 60 × 24 × 365 = 336,384,000 TRX
+
+Total Rewards:
+
+SR Reward Calculation:
+----------------------
+[total reward = vote reward (VR) + block reward (BR)]
+
+VR = total VR × votes SR candidate received/total votes
+BR = total BR/27 - block missed × 32
+
+Note: the reward is calculated per SR per round (6 hours)
+
+Rank 28 to rank 127 SR candidate reward calculation:
+----------------------------------------------------
+[total reward = vote reward (VR)]
+
+VR = total VR × votes SR candidate received/total votes
+	
+Note: the reward is calculated per SR candidate per round (6 hours)
+
+Challenge 1: We will have to find a new reward structure as current reward system is for 99 Billion Supply. If we go with this supply it will run only for around 12 days. 
+
+Challenge 2: We will have to reduce the number of "SuperRepresentatives Candidates" and "SuperRepresentatives".
+
+
+# Network Changes
+==========================
+
+Removal of existing nodes: Full Nodes, Witness Nodes and Solidity Nodes.
+Addition of new nodes in place of above ones.
+Genesis block.
+Block generation in new chain.
+
+Note: Please checkout the Tron Whitepaper it has variable names and other description too.
