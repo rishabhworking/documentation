@@ -38,5 +38,5 @@ You will find follwing files:
 * [Win X Compile](https://github.com/rishabhworking/documentation/blob/master/winXcompilation.txt) - Steps to cross compile QT for windows64 and windows32
 * [Win X Compile Issues](https://github.com/rishabhworking/documentation/blob/master/Xcompilatione_errors.txt) - Few errors I solved during cross compilation for windows.
 * [Explorer Issues](https://github.com/rishabhworking/documentation/blob/master/Err_Dcm_Blk_Exp.txt) - Few bugs in found in iquidus explorer
-* [Dual Boot Issue](https://github.com/rishabhworking/documentation/blob/master/dualBootIssue.txt) - Steps to override windows bootloader with GRUBs
+* [Dual Boot Issue](https://github.com/rishabhworking/documentation/blob/master/DualBootIssue.txt) - Steps to override windows bootloader with GRUB
 
