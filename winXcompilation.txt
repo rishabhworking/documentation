@@ -29,6 +29,8 @@ Building for 64-bit Windows:
 6. CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/
 7. make
 8. make deploy (optional for generating installer)
+9. Strip the Executables:
+/usr/bin/x86_64-w64-mingw32-strip <64-bit-exe-name>
 
 PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') && cd depends && make HOST=x86_64-w64-mingw32 && cd .. && ./autogen.sh && CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && make
 
@@ -44,8 +46,24 @@ Building for 32-bit Windows:
 6. CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/
 7. make
 8. make deploy (optional for generating installer)
+9. Strip the Executables:
+/usr/bin/i686-w64-mingw32-strip <32-bit-exe-name>
 
 PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') && cd depends && make HOST=i686-w64-mingw32 && cd .. && ./autogen.sh && CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && make
+
+
+===============================================================================================================================================
+
+New Findings:
+
+https://cryptocurrencytalk.com/topic/13204-how-to-build-a-windows-qt-wallet-for-any-coin-yourself-from-source-code-step-by-step-instructions
+
+Android Toolchain:
+https://github.com/mingwandroid/toolchain4
+
+
+
+
 
 
 
