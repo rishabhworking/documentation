@@ -1,9 +1,9 @@
 ./monerod
 
-./monero-wallet-rpc --rpc-login adminpc:admin --rpc-bind-port 3009  --rpc-bind-ip 172.31.20.117 --wallet-file xbondwallet --password adminpc  --confirm-external-bind
+./monero-wallet-rpc --rpc-login adminpc:admin --rpc-bind-port 3009  --rpc-bind-ip 0.0.0.0 --wallet-file xbondwallet --password adminpc  --confirm-external-bind
 
 
-curl -u admin:admin --digest -X POST http://13.235.159.58:3009/json_rpc -d '{"jsonrpc":"2.0","id":"0","method":"'get_version'"}' -H 'Content-Type: application/json'
+curl -u adminpc:admin --digest -X POST http://13.235.159.58:3009/json_rpc -d '{"jsonrpc":"2.0","id":"0","method":"'get_version'"}' -H 'Content-Type: application/json'
 
 (To use curl with Postman use the Authorisation tab to set username and password)
 

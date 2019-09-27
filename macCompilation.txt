@@ -1,0 +1,10 @@
+1. Openssl detection error:
+===========================
+
+Error: configure: error: Detected LibreSSL: This is NOT supported, and may break consensus compatibility!
+Solution: https://github.com/PIVX-Project/PIVX/issues/527
+
+./configure LDFLAGS='-L/usr/local/opt/openssl/lib' CPPFLAGS='-I/usr/local/opt/openssl/include' PKG_CONFIG_PATH='/usr/local/opt/openssl/lib/pkgconfig' --with-gui=qt5
+
+2. Openssl 
+
