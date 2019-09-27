@@ -34,6 +34,7 @@ You will find follwing files:
 * [Tron](https://github.com/rishabhworking/documentation/blob/master/tronTechDoc.txt) - Breaking down Tron Protocol 
 
 * [Bitcoin Notes](https://github.com/rishabhworking/documentation/blob/master/bitcoinNotes.txt) - Things I learned about Bitcoin
+* [Bitcoin Raw Transaction](https://github.com/rishabhworking/documentation/blob/master/btcRawTransaction.txt) - How to do Bitcoin Raw transactions
 * [QT GUI](https://github.com/rishabhworking/documentation/blob/master/changesQTUI.txt) - Changing GUI of a POS/POW QT wallet of old type
 * [Win X Compile](https://github.com/rishabhworking/documentation/blob/master/winXcompilation.txt) - Steps to cross compile QT for windows64 and windows32
 * [Win X Compile Issues](https://github.com/rishabhworking/documentation/blob/master/Xcompilatione_errors.txt) - Few errors I solved during cross compilation for windows.
