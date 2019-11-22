@@ -28,7 +28,7 @@ Building for 64-bit Windows:
 5. ./autogen.sh
 6. CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/
 7. make
-8. make deploy (optional for generating installer)
+8. make deploy or makensis share/setup.nsi (optional for generating installer)
 9. Strip the Executables:
 /usr/bin/x86_64-w64-mingw32-strip <64-bit-exe-name>
 
@@ -45,7 +45,7 @@ Building for 32-bit Windows:
 5. ./autogen.sh
 6. CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/
 7. make
-8. make deploy (optional for generating installer)
+8. make deploy or makensis share/setup.nsi (optional for generating installer)
 9. Strip the Executables:
 /usr/bin/i686-w64-mingw32-strip <32-bit-exe-name>
 
