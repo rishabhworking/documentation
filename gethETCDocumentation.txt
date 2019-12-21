@@ -15,6 +15,6 @@ gzip -dc geth-classic-v6.0.6-linux.tar.gz | tar -xzvf -
 
 
 3. Run Geth with Nohup:
------------------------
- sudo nohup ./geth --fast --cache=512 --rpc --rpcport=4163 --rpcapi=eth,web3,net,personal --rpccorsdomain=127.0.0.1
+----------------------- 
+ sudo screen ./geth --fast --cache=512 --rpc --rpcaddr=0.0.0.0 --rpcport=6643 --rpcapi=eth,web3,net,personal --rpccorsdomain=127.0.0.1
 
