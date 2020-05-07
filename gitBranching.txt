@@ -1,0 +1,8 @@
+How to create a new Branch and Push code to it:
+
+git init
+git remote add origin <Origin>
+git checkout -b <Branch Name>
+git add -A
+git commit -m "comment.."
+git push -u origin <Branch Name>
