@@ -55,7 +55,7 @@ sudo systemctl enable rippled.service
 
 nano /etc/opt/ripple/rippled.cfg
 
-[XRP Conf](https://github.com/rishabhworking/documentation/blob/master/rippledCorrectConf.cfg) - Ripple Configuration File
+* [XRP Conf](https://github.com/rishabhworking/documentation/blob/master/rippledCorrectConf.cfg) - Ripple Configuration File
 
 
 8. Start the rippled service:
