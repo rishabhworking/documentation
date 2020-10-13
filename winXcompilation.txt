@@ -7,16 +7,22 @@ Mingw 64-bit Compiler for Windows:
 
 sudo apt-get install g++-mingw-w64-x86-64 mingw-w64-x86-64-dev
 
+* Update the alternative to "posix":
+
+sudo update-alternatives --config x86_64-w64-mingw32-g++
+sudo update-alternatives --config x86_64-w64-mingw32-gcc
+
+===========================================================
 
 Mingw 32-bit Compiler for Windows:
 
 sudo apt-get install g++-mingw-w64-i686 mingw-w64-i686-dev
 
+* Update the alternative to "posix":
 
-Update the alternative to "posix":
+sudo update-alternatives --config i686-w64-mingw32-g++
+sudo update-alternatives --config i686-w64-mingw32-gcc
 
-sudo update-alternatives --config x86_64-w64-mingw32-g++
-sudo update-alternatives --config x86_64-w64-mingw32-gcc
 
 
 Building for 64-bit Windows:
