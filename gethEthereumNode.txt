@@ -1,28 +1,18 @@
    ===================================================Geth Manual Installation Ubuntu 16.04===================================================
 
-1. Clone Ethereu's Go language Client:
+1. Download geth pre-compiled Binary and Unzip it:
 --------------------------------------
 
-git clone https://github.com/ethereum/go-ethereum
+https://geth.ethereum.org/downloads
+
+2. Create 'geth' directory and copy the binary:
+--------------------------------------
+
+mkdir geth && cd geth && cp ../geth-linux-amd64-1.9.23-8c2f2715/geth .
+(change the dir "geth-linux-amd64-1.9.23-8c2f2715" name as per your need as relase name may vary)
 
 
-2. Install dependencies:
-------------------------
-
-sudo apt-get install -y build-essential libgmp3-dev
-
-sudo add-apt-repository ppa:longsleep/golang-backports
-sudo apt-get update
-sudo apt-get install golang-go
-
-
-3. Build Geth:
----------------
-
-cd go-ethereum && make geth
-
-
-4. Create Geth Service:
+3. Create Geth Service:
 -----------------------
 Now come back to the home directory
 
@@ -36,7 +26,7 @@ Type=simple
 User=root
 Restart=always
 WorkingDirectory=/root
-ExecStart=/root/go-ethereum/build/bin/./geth --config config.toml
+ExecStart=/root/geth/./geth --config config.toml
  
 [Install]
 WantedBy=default.target
@@ -55,7 +45,7 @@ systemctl enable geth.service
 4. Create Configuration File:
 -----------------------------
 
-Now go back to the directory containing compiled geth executables: cd /root/go-ethereum/build/bin/
+Now go back to the directory containing compiled geth executables: cd /root/geth
 
 During Sync:
 
@@ -77,8 +67,8 @@ systemctl status geth
 
 Check geth console by: 
 
-cd /root/go-ethereum/build/bin/ && ./geth attach
-{Note: for running all geth commands every time change directory to: /root/go-ethereum/build/bin/}
+cd /root/geth && ./geth attach
+{Note: for running all geth commands every time change directory to: /root/geth}
 
 Enjoy!!!!!
 **************************************************************************************************************************************************
@@ -90,4 +80,3 @@ https://golang.org/dl/
 
 Golang Installation Guide:
 https://golang.org/doc/install?download=go1.12.7.linux-amd64.tar.gz
-
