@@ -1,92 +1,100 @@
-Install the Python 3.7
 
-https://tecadmin.net/install-python-3-7-on-ubuntu-linuxmint/
+1. Download JDK 1.8 
 
+https://www.oracle.com/in/java/technologies/javase/javase-jdk8-downloads.html
 
-Install Java 8 
-
-
-sudo add-apt-repository universe
-sudo apt-get install -y software-properties-common --no-install-recommends
-sudo apt-get install openjdk-8-jdk
-sudo apt-get update
-
-RUN
-
-. ./venv/bin/activate
-tron-cli i
-xbondTron
-xbondAdmin
-XbondAdmin123@
-db.createUser( { user: "xbondAdmin", pwd: "XbondAdmin123@", roles: [ "readWrite" ] } )
-
-pip3 install troncli
+( I have downloaded jdk-8u261-linux-x64.tar.gz for ubuntu 16.04 x64)
 
 
-https://github.com/tronprotocol/Documentation/blob/master/TRX/Solidity_and_Full_Node_Deployment_EN.md
-https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-get-on-ubuntu-16-04
-https://github.com/tronprotocol/java-tron
-https://github.com/tronprotocol/tron-deployment
-Adminpc123!
+2. Make a directory for the JDK:
+
+sudo mkdir -p /usr/lib/jvm
 
 
----------------------------------------
-Setup Java on the server:
+3. Extract the tarball and install the JDK:
 
-If you have java already installed and it's open-jdk then remove it:
-sudo apt-get autoremove openjdk-8-jre
-sudo apt-get purge openjdk-8-jdk
-
-https://stackoverflow.com/questions/55920389/e-package-oracle-java8-installer-has-no-installation-candidate
-
-Create an Oracle account and then download the suitable JDK for your platform.
-https://www.oracle.com/technetwork/java/javase/downloads/java-archive-javase8-2177648.html
-
-Upload the Binaries to the server.
-
-In server:
-
-create a directory /opt/jdk
-
-Then copy the tarball to the /opt/jdk and extract it there.
-
-When you untar the tarball it will create a directory like this:
-/opt/jdk/jdk1.8.0_202
-
-Now set path:
-update-alternatives --install /usr/bin/java java /opt/jdk/jdk1.8.0_202/bin/java 100
-update-alternatives --install /usr/bin/javac javac /opt/jdk/jdk1.8.0_202/bin/javac 100
-
-Syntax for path:
-
-$update-alternatives --install /usr/bin/java java /opt/jdk/jdk1.8.0_$YourVersion$/bin/java 100
-$update-alternatives --install /usr/bin/javac javac /opt/jdk/jdk1.8.0_$YourVersion$/bin/javac 100
-
-================================================================================================================================================
-                                              Latest and Most Reliable
-Create a directory "deploy":
-mkdir deploy
-
-Go inside the "deploy":
-cd deploy
-
-git clone https://github.com/tronprotocol/java-tron.git
-
-cd java-tron
-git checkout -t origin/master
-
-Compile Code:
-
-cd java-tron
-
-./gradlew build
-
-Once compilation is done you will find the binaries in: 
-/root/deploy/java-tron/build/libs 
-
-Copy and paste the binaries to a newly created fullnode directory:
-mkdir /root/deploy/fullnode
-cp /root/deploy/java-tron/build/libs/FullNode.jar /root/deploy/fullnode/FullNode.jar
+sudo tar zxvf jdk-version-linux-x64.tar.gz -C /usr/lib/jvm
+(sudo tar zxvf jdk-8u261-linux-x64.tar.gz -C /usr/lib/jvm)
 
 
+4. Tell the system that there's a new Java version available:
 
+sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.8.0_version/bin/java" 1
+(sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.8.0_261/bin/java" 1)
+
+
+5. Set the new JDK as the default:
+
+sudo update-alternatives --set java /usr/lib/jvm/jdk1.8.0_version/bin/java
+(sudo update-alternatives --set java /usr/lib/jvm/jdk1.8.0_261/bin/java)
+
+
+6. Verify the version of the JRE or JDK
+
+java -version
+
+java version "1.8.0_261"
+Java(TM) SE Runtime Environment (build 1.8.0_261-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.261-b12, mixed mode)
+
+
+7. Download latest Binaries from the github
+
+https://github.com/tronprotocol/java-tron/releases
+(Download the FullNode.jar)
+
+
+8. Download the copy of latest chain for faster Sync
+
+https://backup.trongrid.io
+(Download from Europe server as it happens to be fater than the Asia server. Download will take hours depending on internet speed)
+
+
+9. Extract the chain
+
+Example: tar -xzvf FullNode-25767489-4.1.1-output-directory.tgz
+(run it in background with screen as it will take hours as the tar is large in size)
+
+
+10. Create a script to safely stop the node
+
+Create a script by name of stopFullNode.sh and put the following content in it:
+
+#!/bin/bash
+while true; do
+  pid=`ps -ef |grep FullNode.jar |grep -v grep |awk '{print $2}'`
+  if [ -n "$pid" ]; then
+    kill -15 $pid
+    echo "The java-tron process is exiting, it may take some time, forcing the exit may cause damage to the database, please wait patiently..."
+    sleep 1
+  else
+    echo "java-tron killed successfully!"
+    break
+  fi
+done
+
+
+11. Run the node 
+
+screen java -jar FullNode.jar
+(it will run the node in the background and pick the blocks from the extracted data directory)
+
+
+12. Access the API on port 8090
+
+Now the api will be open at Your_IP:8090 
+
+Example: 198.162.1.1:8090
+
+Example: curl http://198.162.1.1:8090/wallet/getnowblock
+
+API Reference: https://developers.tron.network/reference
+
+**************************************
+
+!! Important !! 
+
+The Tron Full Node never stores your private keys in the server, it send them to you when you generate an address. Please store the private keys properly in your own database, don'r forget backups.
+
+Note: IF YOU EVER NEED TO STOP THE FULL NODE, STOP IT SAFELY BY RUNNING STOP SCRIPT IN STEP 10 (sh stopFullNode.sh)
+Note: Encrypt your connection with SSL
