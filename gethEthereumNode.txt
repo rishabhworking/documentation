@@ -49,11 +49,20 @@ Now go back to the directory containing compiled geth executables: cd /root/geth
 
 During Sync:
 
+Old: 
 ./geth --syncmode "fast" --cache=512 --rpcport=4163 --rpcapi=eth,web3,net,personal --ws --shh dumpconfig > ~/config.toml
+
+New:
+./geth --syncmode "fast" --cache=512 --http --http.port=4163 --http.api=eth,web3,net,personal datadir "/root/data/.ethereum" dumpconfig > ~/config.toml
 
 For production server:
 
+Old:
 ./geth --syncmode "fast" --cache=512 --rpc --rpcaddr=0.0.0.0 --rpcport=4163 --rpcapi=eth,web3,net,personal --shh dumpconfig > ~/config.toml
+
+New:
+./geth --syncmode "fast" --cache=512 --http --http.addr=0.0.0.0 --http.port=4163 --http.api=eth,web3,net,personal --datadir "/root/.ethereum" dumpconfig > ~/config.toml
+(you can also mention any different data directory)
 
 (This will dump all the flags in the configuration file)
 
@@ -80,3 +89,8 @@ https://golang.org/dl/
 
 Golang Installation Guide:
 https://golang.org/doc/install?download=go1.12.7.linux-amd64.tar.gz
+
+curl -X POST \
+     -H 'Content-Type: application/json' \
+     -d '{"jsonrpc":"2.0","id":"curltext","method":"eth_syncing","params":[]}' \
+     http://localhost:4163
