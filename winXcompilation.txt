@@ -2,6 +2,7 @@ General Dependencies:
 
 sudo apt-get install build-essential libtool autotools-dev automake pkg-config bsdmainutils curl nsis
 
+***********************************************************
 
 Mingw 64-bit Compiler for Windows:
 
@@ -23,7 +24,7 @@ sudo apt-get install g++-mingw-w64-i686 mingw-w64-i686-dev
 sudo update-alternatives --config i686-w64-mingw32-g++
 sudo update-alternatives --config i686-w64-mingw32-gcc
 
-
+***********************************************************
 
 Building for 64-bit Windows:
 
@@ -40,7 +41,7 @@ Building for 64-bit Windows:
 
 PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') && cd depends && make HOST=x86_64-w64-mingw32 && cd .. && ./autogen.sh && CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && make
 
-
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 Building for 32-bit Windows:
 
@@ -57,6 +58,39 @@ Building for 32-bit Windows:
 
 PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') && cd depends && make HOST=i686-w64-mingw32 && cd .. && ./autogen.sh && CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && make
 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Building for OsX:
+
+1. PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g')
+2. cd depends 
+
+>> Find the required SDK version from file depends/hosts/darwin.mk, under the varible "OSX_SDK_VERSION" on Line 2.
+>> Also create a SDKs directory inside depends directory. Put the required apple SDK, which can be found from here: https://github.com/phracker/MacOSX-SDKs
+>> Also unzip the sdk after placing it inside the depends/SDKs/ directory, example: depends/SDKs/MacOSX10.11.sdk/ 
+
+3. make HOST=x86_64-apple-darwin11 
+or 
+make HOST=x86_64-apple-darwin16
+
+4. cd ..
+5. ./autogen.sh
+
+6. CONFIG_SITE=$PWD/depends/x86_64-apple-darwin11/share/config.site ./configure --prefix=/ 
+or 
+CONFIG_SITE=$PWD/depends/x86_64-apple-darwin16/share/config.site ./configure --prefix=/ ./configure --prefix=/
+
+7. make
+8. make deploy or make install (optional for generating installer)
+9. Cannot strip the binaries
+
+PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') && cd depends && make HOST=x86_64-apple-darwin11 && cd .. && ./autogen.sh && CONFIG_SITE=$PWD/depends/x86_64-apple-darwin11/share/config.site ./configure --prefix=/ && make
+
+or 
+
+PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') && cd depends && make HOST=x86_64-apple-darwin16 && cd .. && ./autogen.sh && CONFIG_SITE=$PWD/depends/x86_64-apple-darwin16/share/config.site ./configure --prefix=/ && make
+
+
 
 ===============================================================================================================================================
 
@@ -66,10 +100,3 @@ https://cryptocurrencytalk.com/topic/13204-how-to-build-a-windows-qt-wallet-for-
 
 Android Toolchain:
 https://github.com/mingwandroid/toolchain4
-
-
-
-
-
-
-
