@@ -1,0 +1,130 @@
+=========================Bitcoin MainNet Setup Ubuntu 18.04=========================
+
+
+1. Download Bitcoin pre-compiled Binary and Untar it:
+--------------------------------------
+
+Go to: https://bitcoincore.org/bin/bitcoin-core-24.0.1/
+
+and download bitcoin-24.0.1-x86_64-linux-gnu.tar.gz (for Ubuntu and Debian OS) in home directory
+
+>> wget https://bitcoincore.org/bin/bitcoin-core-24.0.1/bitcoin-24.0.1-x86_64-linux-gnu.tar.gz
+
+>> tar -xzvf bitcoin-24.0.1-x86_64-linux-gnu.tar.gz
+
+
+
+2. Copy files to /usr/local/bin:
+--------------------------------------
+
+In order to access bitcoind, bitcoin-cli and other tools globally we need to place them in /usr/local/bin directory
+
+>> cp bitcoin-24.0.1/bin/* /usr/local/bin/
+
+Once copied, remove the downloaded bitcoin TAR and extracted directory
+
+>> rm -rf bitcoin-24.0.1 && rm bitcoin-24.0.1-x86_64-linux-gnu.tar.gz 
+
+
+
+3. Create Bitcoin Service:
+-----------------------
+Now come back to the home or root directory and create bitcoin service
+
+>> nano bitcoin.service (Then paste the following lines, but mind the location of the bitcoin executables)
+
+[Unit]
+Description=Bitcoin
+
+[Service]
+Type=simple
+User=root
+Restart=always
+ExecStart=/usr/local/bin/bitcoind
+ExecStop=/usr/local/bin/bitcoin-cli stop 
+
+[Install]
+WantedBy=default.target
+
+
+
+4. Deploying Service:
+---------------------
+Once all the params are set we need to copy the file to path: /etc/systemd/system/
+
+>> cp bitcoin.service /etc/systemd/system/bitcoin.service
+
+>> systemctl daemon-reload
+
+>> systemctl enable bitcoin.service
+
+
+
+5. Start Bitcoin:
+--------------
+
+>> systemctl start bitcoin
+
+>> systemctl status bitcoin
+
+Check Bitcoin blockchain status by:
+
+>> bitcoin-cli getblockchaininfo
+(If bitcoind is running successfully you will see an array showing blockchain stats)
+
+
+
+6. Create Configuration File:
+-----------------------------
+
+First we need to create a wallet with bitcoin-cli createwallet <walletName>
+
+>> bitcoin-cli createwallet wallet
+
+Now we will stop the bitcoin service with
+
+>> systemctl stop bitcoin
+
+Let's create bitcoin.conf file in the default bitcoin data directory
+
+>> nano .bitcoin/bitcoin.conf
+
+
+Following is the minimal configuration sample:
+
+#RPC Details
+
+rpcuser=test1
+rpcpassword=test2
+rpcport=3419
+#rpcallowip=IP to allow
+rpcbind=127.0.0.1
+#rpcbind=Server IP
+
+#(Allowing RPC on all IPs for local access during development)
+#rpcallowip=0.0.0.0
+
+#walletnotify=curl https://domain.com/receive-transaction/{%s}
+
+
+#Wallet (set you wallet path)
+wallet=/root/.bitcoin/wallets/wallet
+
+
+#Resource Allocation
+dbcache=3072
+maxmempool=1024
+rpcthreads=4
+
+# You can prune the bitcoin blockchain size and set the size in MiB (default is >=550)
+#prune=SizeInMiB
+
+
+
+5. Testing RPC Locally:
+--------------
+Now as wallet and the configuration files are correctly setup you can start the bitcoin service and after few minutes you can check the RPC response from the terminal itself:
+
+>> systemctl start bitcoin
+
+>> curl -s -X POST --data-binary '{"jsonrpc":"2.0","id":"curltext","method":"getwalletinfo","params":[]}' -H 'content-type: text/plain;' http://test1:test2@127.0.0.1:3419

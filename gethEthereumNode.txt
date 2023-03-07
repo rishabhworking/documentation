@@ -1,4 +1,4 @@
-   ===================================================Geth Manual Installation Ubuntu 16.04===================================================
+=========================Geth Manual Installation Ubuntu 18.04=========================
 
 1. Download geth pre-compiled Binary and Unzip it:
 --------------------------------------
@@ -47,24 +47,14 @@ systemctl enable geth.service
 
 Now go back to the directory containing compiled geth executables: cd /root/geth
 
-During Sync:
-
-Old: 
-./geth --syncmode "fast" --cache=512 --rpcport=4163 --rpcapi=eth,web3,net,personal --ws --shh dumpconfig > ~/config.toml
-
-New:
-./geth --syncmode "fast" --cache=512 --http --http.port=4163 --http.api=eth,web3,net,personal datadir "/root/data/.ethereum" dumpconfig > ~/config.toml
 
 For production server:
 
-Old:
-./geth --syncmode "fast" --cache=512 --rpc --rpcaddr=0.0.0.0 --rpcport=4163 --rpcapi=eth,web3,net,personal --shh dumpconfig > ~/config.toml
-
 New:
-./geth --syncmode "fast" --cache=512 --http --http.addr=0.0.0.0 --http.port=4163 --http.api=eth,web3,net,personal --datadir "/root/.ethereum" dumpconfig > ~/config.toml
+./geth --syncmode "light" --http --http.addr=0.0.0.0 --http.port=4163 --http.api=eth,web3,net,personal --datadir "/root/.ethereum" dumpconfig > ~/config.toml
 (you can also mention any different data directory)
 
-(This will dump all the flags in the configuration file)
+(This will dump all the flags in the configuration file named config.toml in the home or root directory )
 
 
 5. Start Geth:
