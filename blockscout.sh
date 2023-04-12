@@ -1,5 +1,7 @@
 #!/bin/sh
 
+list tables  \l
+
 sudo -i -u postgres
 
 sudo -u postgres psql
@@ -19,7 +21,7 @@ export PGUSER=postgres
 export PGHOST=127.0.0.1
 export PGDATABASE=blockscout
 
-export SECRET_KEY_BASE="xKFVAamIi3Psh0n7fFRtGxJECUBpVJrEOq9B+UbZdn+QOXgvSVWPVFr2v4/eGE+E/"
+export SECRET_KEY_BASE="Kb+uH05FMVtCKQHHMrSU/U7FXO+LZ01L7lNbKsqdo8CWJpjXlfqAn3F4yireSwlu"
 
 Success. You can now start the database server using:
 
