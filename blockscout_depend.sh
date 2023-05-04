@@ -65,7 +65,7 @@ export DATABASE_URL=postgresql://blockscout:Passw0Rd@localhost:5432/blockscout
 
 # Clone and compile BlockScout
 cd ~
-git clone https://github.com/rishabhworking/blockscout
+git clone https://github.com/blockscout/blockscout
 cd blockscout
 mix deps.get -y
 mix local.rebar --force
@@ -80,9 +80,10 @@ mix do ecto.drop, ecto.create, ecto.migrate
 cd apps/block_scout_web/assets
 sudo npm install
 sudo node_modules/webpack/bin/webpack.js --mode production
-
-
+cd ~/blockscout
 npm install --save solc
+sudo mix phx.digest
+
 
 
 

@@ -1,0 +1,136 @@
+Clone the GitHub Repo:
+
+
+1. Add fonts: 
+blockscout/apps/block_scout_web/assets/static/images/icons/fontawesome
+blockscout/apps/block_scout_web/assets/css/components/_fontawesome_icon.scss
+
+2. Recompile:
+cd blockscout/apps/block_scout_web/assets && sudo node_modules/webpack/bin/webpack.js --mode production
+
+3. Edit the MaineNet and TestNet Names in file:
+blockscout/apps/block_scout_web/lib/block_scout_web/views/layout_view.ex
+
+4. Add Github, Docs and Discord Links from:
+blockscout/config/runtime.exs
+
+5. Edit Footer Description:
+/blockscout/apps/block_scout_web/priv/gettext/en/LC_MESSAGES/default.po
+/blockscout/apps/block_scout_web/priv/gettext/default.po
+
+6. Edit Footer Links:
+/blocscout/apps/block_scout_web/lib/block_scout_web/templates/layout/_footer.html.eex
+
+7. Edit the RPC details in metamask file:
+/blocscout/apps/block_scout_web/lib/block_scout_web/templates/layout/_add_chain_to_mm.html.eex
+
+
+8. ETH RPC API Documentation
+/blocscout/apps/block_scout_web/lib/block_scout_web/templates/api_docs/eth_rpc.html.eex
+
+
+9. Change ERC to Custom Name
+/blocscout/apps/block_scout_web/lib/block_scout_web/templates/tokens/overview/_details.html.eex
+
+Replace:
+<dd class="col-sm-8 col-md-8 col-lg-9">
+<%= @token.type %>
+</dd>
+
+With:
+<%= if @token.type == "ERC-20" do %>
+<dd class="col-sm-8 col-md-8 col-lg-9">
+<%= gettext("ARC-20") %>
+</dd>
+<% end %>
+<%= if @token.type == "ERC-721" do %>
+<dd class="col-sm-8 col-md-8 col-lg-9">
+<%= gettext("ARC-721") %>
+</dd>
+<% end %>
+<%= if @token.type == "ERC-1155" do %>
+<dd class="col-sm-8 col-md-8 col-lg-9">
+<%= gettext("ARC-1155") %>
+</dd>
+<% end %>   
+
+
+ERC-20
+ERC-721
+ERC-1155
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Command: sudo -u blockscout psql blockscout
+
+Error: 
+
+sudo: unknown user: blockscout
+sudo: unable to initialize policy plugin
+----------------------------------------
+Solution:
+
+adduser blockscout
+sudo -i -u postgres
+psql
+CREATE DATABASE blockscout;
+CREATE USER blockscout WITH PASSWORD 'Passw0Rd';
+GRANT ALL PRIVILEGES ON DATABASE blockscout to blockscout;
+\q
+export DATABASE_URL=postgresql://blockscout:Passw0Rd@localhost:5432/blockscout
+exit
+export DATABASE_URL=postgresql://blockscout:Passw0Rd@localhost:5432/blockscout
+sudo -u blockscout psql blockscout
+
+
+
+export DATABASE_URL=postgresql://blockscout:Passw0Rd@localhost:5432/blockscout
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US
+export LC_ALL=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+export ETHEREUM_JSONRPC_HTTP_URL=http://localhost:16459
+export ETHEREUM_JSONRPC_WS_URL=ws://localhost:17469
+export ETHEREUM_JSONRPC_VARIANT=geth
+export BLOCKSCOUT_PROTOCOL=http
+export PORT=4000
+export MIX_ENV=prod
+export COIN="Arietta"
+export COIN_NAME="tARCH"
+export SECRET_KEY_BASE=f6PDmMf2Wzh9CEs5TCUFD23LRnN1ErTNQ32NlZaV35dstPBzq6sdJKnD+DFyKkoN
+export ECTO_USE_SSL=false
+export NETWORK="TestNet"
+export SUBNETWORK="Arietta"
+export DISABLE_EXCHANGE_RATES="true"
+export LINK_TO_OTHER_EXPLORERS="false"
+export BLOCK_TRANSFORMER=clique
+export INDEXER_DISABLE_BLOCK_REWARD_FETCHER="true"
+export INDEXER_DISABLE_PENDING_TRANSACTIONS_FETCHER="true"
+export INDEXER_DISABLE_INTERNAL_TRANSACTIONS_FETCHER="true"
+export CHAIN_ID=2357
+export POOL_SIZE=10
+export POOL_SIZE_API=10
+export LOGO=/images/archheader.png
+export SHOW_TESTNET_LABEL="true"
+export PERMANENT_DARK_MODE_ENABLED="true"
+export BLOCKSCOUT_HOST=testnetexplorer.ariettachain.tech
+
+
+
