@@ -59,7 +59,7 @@ sudo apt -y install postgresql postgresql-contrib
 sudo systemctl start postgresql.service
 sudo -u postgres psql -c "CREATE USER blockscout WITH PASSWORD 'Passw0Rd'"
 sudo -u postgres psql -c "ALTER USER blockscout WITH SUPERUSER"
-sudo -u blockscout psql -c "CREATEDB blockscout"
+sudo -u postgres createdb blockscout;
 ##sudo -u blockscout psql blockscout
 export DATABASE_URL=postgresql://blockscout:Passw0Rd@localhost:5432/blockscout
 
@@ -69,9 +69,7 @@ git clone https://github.com/blockscout/blockscout
 cd blockscout
 mix deps.get -y
 mix local.rebar --force
-KEY=$(mix phx.gen.secret)
-export SECRET_KEY_BASE="$KEY"
-export SECRET_KEY_BASE="$KEY"
+mix phx.gen.secret
 #OQr4tYJONhBKaZdpt0nHvdXrEGl9e6mWgfNcZBiU9DiHJO6mJyiGMWxvCvI+O3Kb
 export MIX_ENV=prod
 mix local.hex --force
