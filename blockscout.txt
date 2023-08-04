@@ -59,6 +59,25 @@ ERC-20
 ERC-721
 ERC-1155
 
+10. Edit footer logo Height 
+/blockscout/apps/block_scout_web/assets/css/components/_footer.scss
+Set:
+$footer-logo-height: 64px !default;
+
+
+11. Remove Footer logo brightness
+/blockscout/apps/block_scout_web/assets/css/theme/_neutral_variables.scss
+Remove:
+.footer-logo { filter: brightness(0) invert(1); }
+
+cd blockscout/apps/block_scout_web/assets
+Run:
+npm run build
+
+then cd blockscout
+mix phx.digest
+
+
 
 
 
