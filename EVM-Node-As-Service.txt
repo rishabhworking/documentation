@@ -1,0 +1,46 @@
+sudo nano /etc/systemd/system/ariettamainnet.service
+
+
+File:
+
+[Unit]
+Description=Arietta MainNet Server
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/root
+ExecStart= /usr/local/bin/polygon-edge server --data-dir /root/.arietta --chain arietta-mainnet.json
+
+[Install]
+WantedBy=multi-user.target
+
+
+sudo systemctl daemon-reload
+
+sudo systemctl enable ariettamainnet.service
+
+
+sudo systemctl start ariettamainnet.service
+
+sudo systemctl status ascnetwork.service
+
+
+sudo journalctl -u ascnetwork.service -f
+sudo journalctl -u ariettamainnet.service -f
+sudo journalctl -u ariettatestnet.service -f
+
+
+If you see no log then try:
+sudo systemctl restart systemd-journald
+
+
+
+
+
+ExecStart= /usr/local/bin/polygon-edge server --data-dir /root/.arietta --chain arietta-mainnet.json --grpc-address :21738 --libp2p 0.0.0.0:25710 --jsonrpc :26367 --dns dns/tnboot.ariettachain.tech
+ExecStart= /usr/local/bin/polygon-edge server --data-dir /root/.arietta --chain arietta-mainnet.json
+
+screen polygon-edge server --data-dir /root/.arietta --chain arietta-mainnet.json --grpc-address :11738 --libp2p 0.0.0.0:15710 --jsonrpc :16367 --seal  --price-limit 3000000000
+
+
