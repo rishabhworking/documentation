@@ -25,7 +25,22 @@ sudo update-alternatives --config i686-w64-mingw32-g++
 sudo update-alternatives --config i686-w64-mingw32-gcc
 
 ***********************************************************
+Building for Linux:
 
+1. PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g')
+2. cd depends
+3. make HOST=x86_64-pc-linux-gnu
+4. cd ..
+5. ./autogen.sh
+6. CONFIG_SITE=$PWD/depends/x86_64-pc-linux-gnu/share/config.site ./configure --prefix=/
+7. make
+8. make deploy or makensis share/setup.nsi (optional for generating installer)
+9. Strip the Executables:
+/usr/bin/x86_64-w64-mingw32-strip <64-bit-exe-name>
+
+PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') && cd depends && make HOST=x86_64-w64-mingw32 && cd .. && ./autogen.sh && CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && make
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Building for 64-bit Windows:
 
 1. PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g')
