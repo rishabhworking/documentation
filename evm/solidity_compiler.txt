@@ -1,0 +1,54 @@
+sudo apt-get install pkg-config libssl-dev
+
+
+-------------------
+sudo apt update
+sudo apt install build-essential autoconf libtool cmake
+
+# Go to a directory where you want to download and build protobuf
+cd ~
+
+# Download protobuf v3.15.0
+wget https://github.com/protocolbuffers/protobuf/releases/download/v3.15.0/protobuf-all-3.15.0.tar.gz
+
+# Extract the downloaded archive
+tar -xzvf protobuf-all-3.15.0.tar.gz
+
+# Go into the protobuf directory
+cd protobuf-3.15.0
+
+./autogen.sh
+./configure
+make
+sudo make install
+
+
+export PATH="/usr/local/bin:$PATH"
+
+sudo ldconfig
+
+-------------------
+
+wget https://github.com/grpc-ecosystem/grpc-gateway/releases/download/v2.15.0/protoc-gen-openapiv2-v2.15.0-linux-x86_64 -O ./protoc-gen-openapiv2
+chmod +x protoc-gen-openapiv2
+sudo mv ./protoc-gen-openapiv2 /usr/bin/protoc-gen-openapiv2
+
+screen smart-contract-verifier-server
+
+btw blockscout documentation says this:
+If running locally, the smart-contract-verifier is integrated with docker-compose``
+Registry of docker images is available via the docker-compose file. For registry information see: https://github.com/blockscout/blockscout-rs/pkgs/container/smart-contract-verifier
+
+
+
+docker run -d --name smart-contract-verifier -v /root/base.toml:/app/base.toml -p 8150:8050 ghcr.io/blockscout/smart-contract-verifier:${SMART_CONTRACT_VERIFIER_DOCKER_TAG:-latest}
+docker-compose -f docker-compose-smart-contract-verifier.yml up -d
+docker stop smart-contract-verifier
+docker rm smart-contract-verifier
+docker logs smart-contract-verifier
+
+docker compose -f docker-compose-smart-contract-verifier.yml down
+docker compose -f docker-compose-smart-contract-verifier.yml up -d
+docker compose -f docker-compose-smart-contract-verifier.yml ps
+docker logs smart-contract-verifier
+
