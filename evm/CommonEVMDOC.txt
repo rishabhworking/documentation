@@ -4,8 +4,7 @@ node index.js -url http://127.0.0.1:8545 -m "antenna gas lucky wreck method dinn
 
 Download Geth:
 
-sudo wget -O /usr/local/bin/geth https://github.com/rishabhworking/temp/releases/download/2.0/geth && sudo chmod +x /usr/local/bin/geth && geth version
-
+sudo wget -O /usr/local/bin/geth https://github.com/rishabhworking/resources/releases/download/downloads/geth && sudo chmod +x /usr/local/bin/geth && geth version
 
 
 
@@ -372,10 +371,8 @@ export BLOCKSCOUT_HOST=explorer.ariettachain.tech
 -----------------------------------------------------------------
 
 
-
+IPC Add Peer:
 admin.addPeer("") 
-
-admin.addPeer("enode://1426f40a2a99be974963b8187ae7e0c7d9177b02c63832efda482d63a63095b91386bb9142e7b3314701c66a5a40ceafe3f7137c52e58dd128ceb40f40264bcc@170.187.193.100:5557") 
 
 
 
