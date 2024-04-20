@@ -1,0 +1,16 @@
+The main difference is that sshd is a server (like a web server serving https) and SSH is a client (think of a web browser).
+The client/user authenticates itself against the server using the users credentials.
+
+nano /etc/ssh/sshd_config
+
+systemctl restart sshd
+(after every change in ssh config)
+
+PermitRootLogin no
+PasswordAuthentication no
+The Challenge one should be removed
+
+New ubutnu versions make you to change here at: /etc/ssh/sshd_config.d/50-cloud-init.conf
+
+
+
