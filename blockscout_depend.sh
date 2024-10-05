@@ -35,7 +35,7 @@ sudo apt -y install esl-erlang=1:24.*
 
 # Install required version of Elixir
 cd ~
-mkdir /usr/local/elixir
+sudo mkdir /usr/local/elixir
 wget https://github.com/elixir-lang/elixir/releases/download/v1.13.4/Precompiled.zip
 sudo unzip -d /usr/local/elixir/ Precompiled.zip
 rm Precompiled.zip
