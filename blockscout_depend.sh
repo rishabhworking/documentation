@@ -25,7 +25,7 @@ rm erlang-solutions_2.0_all.deb
 rm erlang_solutions.asc
 
 # Add NodeJS repo
-sudo curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+sudo curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 
 # Install Rust
 sudo curl https://sh.rustup.rs -sSf | sh -s -- -y
