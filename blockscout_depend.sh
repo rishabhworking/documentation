@@ -25,7 +25,7 @@ rm erlang-solutions_2.0_all.deb
 rm erlang_solutions.asc
 
 # Add NodeJS repo
-curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 
 # Install Rust
 sudo curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -35,7 +35,7 @@ sudo apt -y install esl-erlang=1:24.*
 
 # Install required version of Elixir
 cd ~
-mkdir /usr/local/elixir
+sudo mkdir /usr/local/elixir
 wget https://github.com/elixir-lang/elixir/releases/download/v1.13.4/Precompiled.zip
 sudo unzip -d /usr/local/elixir/ Precompiled.zip
 rm Precompiled.zip
@@ -65,6 +65,7 @@ export DATABASE_URL=postgresql://blockscout:Passw0Rd@localhost:5432/blockscout
 
 # Clone and compile BlockScout
 cd ~
+git clone https://github.com/blockscout/blockscout
 cd blockscout
 mix deps.get -y
 mix local.rebar --force
@@ -80,3 +81,11 @@ sudo node_modules/webpack/bin/webpack.js --mode production
 cd ~/blockscout
 npm install --save solc
 sudo mix phx.digest
+
+
+
+
+
+
+
+		
