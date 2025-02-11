@@ -1,0 +1,35 @@
+sudo apt install nodejs -y
+
+sudo apt install npm -y
+
+sudo npm install pm2@latest -g
+
+
+sudo apt install nodejs -y && sudo apt install npm -y && sudo npm install pm2@latest -g
+
+module.exports = {
+  apps: [
+    {
+      name: "KBC-node",
+      script: "geth",
+      
+      args: "--datadir /root/.kbcfoundation --networkid 11000 --port 30313 --syncmode 'full' --bootnodes enode://2dfc4d423b7f5eaf79829d584ee7f9e07f867695c467f6d5e12d796409a0350fdfd3c74f0b7bb6d12b2f284773826c65efe204a3dabe572f43fe9cd9547ca342@45.76.190.180:30380 --gcmode=archive --ws --ws.origins=* --ws.api eth,net,web3,txpool --http --http.vhosts=localhost --http.corsdomain=* --http.api eth,net,web3,txpool --miner.gasprice 3000000000",
+      
+      restart_delay: 60000, // Restart after 1 minute if it crashes
+      exec_mode: "fork", // Use fork mode for single instance
+      watch: false, // Disable watching to avoid unnecessary restarts
+      max_restarts: 10, // Limit the number of restarts to prevent endless loops
+      error_file: "/dev/null", // Redirect error logs to /dev/null
+      out_file: "/dev/null", // Redirect output logs to /dev/null
+      log_date_format: "YYYY-MM-DD HH:mm Z", // Format logs if enabled
+      autorestart: true // Automatically restart if it crashes
+    }
+  ]
+}
+
+
+pm2 startup
+
+pm2 save
+
+

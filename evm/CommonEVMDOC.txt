@@ -7,7 +7,7 @@ Download Geth:
 sudo wget -O /usr/local/bin/geth https://github.com/rishabhworking/resources/releases/download/downloads/geth && sudo chmod +x /usr/local/bin/geth && geth version
 
 
-
+--allow-insecure-unlock --unlock 1eda5eafc2a4b958759b1fcac03ae1683096d5ad  --password /data/nasdaccryptocoin/password.txt --mine
 -----------------------------------------------------------------
 
 Ports:
@@ -32,6 +32,8 @@ Checking JSON RPC Response from Terminal:
 
 curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' http://localhost:8545
 
+curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' https://rpc.kbchainscan.com
+
 Installing WebSocket Tool and Checking reponse from local terminal:
 
 sudo npm install -g wscat
@@ -40,7 +42,7 @@ wscat -c ws://localhost:8546
 -----------------------------------------------------------------
 
 Clean a build:
-rm -rf _build && rm -rf deps && rm -rf apps/block_scout_web/assets/node_modules && rm -rf apps/explorer/node_modules && rm -rf logs/prod
+sudo rm -rf _build && sudo rm -rf deps && sudo rm -rf apps/block_scout_web/assets/node_modules && sudo rm -rf apps/explorer/node_modules && sudo rm -rf logs/prod
 
 Recompile After CSS Changes:
 cd apps/block_scout_web/assets/ && npm run build && cd ../../../ && mix phx.digest && screen mix phx.server
@@ -367,6 +369,7 @@ export POOL_SIZE=10
 export POOL_SIZE_API=15
 export ECTO_USE_SSL="false"
 export BLOCKSCOUT_HOST=explorer.ariettachain.tech
+export SHOW_TESTNET_LABEL="true"
 
 -----------------------------------------------------------------
 
@@ -376,8 +379,20 @@ admin.addPeer("")
 
 
 
+sudo apt install libncurses5
+sudo apt install libsctp1
+
+wget http://mirrors.kernel.org/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+
+wget https://binaries2.erlang-solutions.com/ubuntu/pool/contrib/e/esl-erlang/esl-erlang_24.3.4-1~ubuntu~focal_amd64.deb
+sudo dpkg -i esl-erlang_24.3.4-1~ubuntu~focal_amd64.deb 
+
+elixir -v 
 
 
+https://www.erlang-solutions.com/downloads/#
+dpkig
 
 
 
