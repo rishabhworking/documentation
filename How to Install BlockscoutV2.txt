@@ -1,0 +1,62 @@
+# 1. Download all required .deb packages
+wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/containerd.io_1.6.28-2_amd64.deb
+wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-ce-cli_20.10.24~3-0~ubuntu-jammy_amd64.deb
+wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-ce_20.10.24~3-0~ubuntu-jammy_amd64.deb
+wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-compose-plugin_2.20.2-1~ubuntu.22.04~jammy_amd64.deb
+
+
+
+# 2. Install in the correct dependency order
+sudo dpkg -i containerd.io_1.6.28-2_amd64.deb
+sudo dpkg -i docker-ce-cli_20.10.24~3-0~ubuntu-jammy_amd64.deb
+sudo dpkg -i docker-ce_20.10.24~3-0~ubuntu-jammy_amd64.deb
+sudo dpkg -i docker-compose-plugin_2.20.2-1~ubuntu.22.04~jammy_amd64.deb
+
+
+
+"PLEASE DONT RENAME ANYTHING IN THE PROXY DIRECTORY, JUST MAKE CHANGES IN THE .tempaltes AND IT WILL WORK"
+
+
+
+# Check Docker version
+docker --version
+
+# Check Docker Compose plugin version
+docker compose version
+
+# Create the 'docker' group
+sudo groupadd docker
+
+# Start the Docker service again
+sudo systemctl daemon-reexec
+sudo systemctl restart docker
+
+# Verify Docker is running
+sudo systemctl status docker
+
+# Run test container (optional)
+sudo docker run hello-world
+
+
+
+
+
+# Cloining Blockscout:
+git clone https://github.com/blockscout/blockscout
+
+# Up All Docker Containers
+docker compose -f docker-compose.yml up -d
+docker compose -f docker-compose.yml down
+
+
+docker compose -f microservices.yml up -d
+docker compose -f microservices.yml down
+
+
+Go inside a container: docker exec -it <container_name> bash
+
+
+https://docs.blockscout.com/setup/deployment/manual-deployment-guide/ubuntu-setup
+https://docs.blockscout.com/setup/deployment/manual-deployment-guide
+https://docs.blockscout.com/setup/deployment/docker-compose-deployment
+https://docs.blockscout.com/setup/deployment/frontend-migration/proxy-setup

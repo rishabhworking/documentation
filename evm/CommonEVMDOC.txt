@@ -7,7 +7,6 @@ Download Geth:
 sudo wget -O /usr/local/bin/geth https://github.com/rishabhworking/resources/releases/download/downloads/geth && sudo chmod +x /usr/local/bin/geth && geth version
 
 
---allow-insecure-unlock --unlock 1eda5eafc2a4b958759b1fcac03ae1683096d5ad  --password /data/nasdaccryptocoin/password.txt --mine
 -----------------------------------------------------------------
 
 Ports:
@@ -32,7 +31,7 @@ Checking JSON RPC Response from Terminal:
 
 curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' http://localhost:8545
 
-curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' https://rpc.kbchainscan.com
+curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' https://rpc.quantoro.io
 
 Installing WebSocket Tool and Checking reponse from local terminal:
 
@@ -87,14 +86,27 @@ Public RPC Node Nginx Conf:
 
 sudo nano /etc/nginx/sites-available/domain.com.conf
                                                        
-limit_req_zone $binary_remote_addr zone=limit:2m rate=3r/s; # 2MB Memory 3 requests per second, change if have more resources
+limit_req_zone $binary_remote_addr zone=limit:2m rate=3r/s;
 
 server {
   server_name domain.com;
 
-
+  # HTTP RPC Endpoint
   location ^~ / {
-      limit_req zone=limit burst=15; # 15 Max Requests under 5 seconds
+      limit_req zone=limit burst=15;
+
+      # CORS Headers
+      add_header 'Access-Control-Allow-Origin' '*' always;
+      add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+      add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept' always;
+
+      if ($request_method = OPTIONS ) {
+          add_header 'Access-Control-Allow-Origin' '*';
+          add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+          add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept';
+          return 204;
+      }
+
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
@@ -102,11 +114,25 @@ server {
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header Host $http_host;
       proxy_set_header X-NginX-Proxy true;
-      proxy_pass    http://127.0.0.1:8545/; #http port
+      proxy_pass http://127.0.0.1:8545/;
   }
 
+  # WebSocket Endpoint
   location ^~ /ws {
-      limit_req zone=limit burst=15; # 15 Max Requests under 5 seconds
+      limit_req zone=limit burst=15;
+
+      # CORS Headers
+      add_header 'Access-Control-Allow-Origin' '*' always;
+      add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+      add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept' always;
+
+      if ($request_method = OPTIONS ) {
+          add_header 'Access-Control-Allow-Origin' '*';
+          add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+          add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept';
+          return 204;
+      }
+
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
@@ -114,12 +140,13 @@ server {
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header Host $http_host;
       proxy_set_header X-NginX-Proxy true;
-      proxy_pass   http://127.0.0.1:8546/; #ws port
+      proxy_pass http://127.0.0.1:8546/;
   }
-
 }
 
 sudo ln -s /etc/nginx/sites-available/domain.com.conf /etc/nginx/sites-enabled/domain.com.conf
+
+pleae make changes in my template so I could reuse it
 -----------------------------------------------------------------
 
 Private RPC Node Nginx Conf:
@@ -183,7 +210,7 @@ Facuet local compilation commands:
 
 /home/blissedmonk/go1.20.3.linux-amd64/go/bin/./go generate
 /home/blissedmonk/go1.20.3.linux-amd64/go/bin/./go build -o eth-faucet
-./eth-faucet -httpport 8080 -wallet.provider http://localhost:8545 -wallet.keyjson keystoreupcg -wallet.keypass password.txt
+./eth-faucet -httpport 8080 -wallet.provider https://testnetrpc.3cchain.io/ -wallet.keyjson keystoreupcg -wallet.keypass password.txt
 
 -----------------------------------------------------------------
 
@@ -397,7 +424,33 @@ dpkig
 
 
 
+-----------------------------
 
+Hardhat Compilation:
+
+npx hardhat compile
+
+1. npx hardhat run scripts/deploy.js --network pkrd
+
+2. npx hardhat flatten > flattened.sol
+
+3. sed -i 's/\\//g' flattened.sol
+
+4. contract_source=$(jq -Rs . < flattened.sol)
+
+5. curl -X POST "https://pkrdscan.com/api?module=contract&action=verify" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "addressHash": "0x05C49a73D14dD5DeAB0E20dB694E1947A1c924ea",
+    "name": "VerifyToken",
+    "compilerVersion": "v0.8.22+commit.4fc1097e",
+    "optimization": false,
+    "evmVersion": "paris",
+    "contractSourceCode": '"$contract_source"',
+    "autodetectConstructorArguments": true
+  }'
+  
+Note: make sure you change the Token Name in scripts/deploy.js. Also contract address and name in step 5
 
 
 
