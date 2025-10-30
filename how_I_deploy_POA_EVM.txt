@@ -1,0 +1,34 @@
+Sections:
+
+# Why you need an EVM Chain?
+
+Pitch the ultra quick block time of 3 to 15 seconds contrast to 1 to 10 min of bitcoin based forks.
+Pitch resistance to 51 percent which is possible for bitcoin based POW and POS forks.
+Pitch No need for Desktop wallet and support for Metamask as universal wallet.
+Pitch Support for Tokens, NFTs and DApps which open doors to digitization of real life assets on your Own EVM Chain
+Include points which I might have missed.
+
+
+# How we curate this solution for you?
+
+1. Use of Geth Consensus Client to run the consunsus layer of the blockchain. 
+2. Using Clique POA for block finality in round robin manner.
+3. Server Infrastrucutre includes: 6 server initally for mainnet, where three are validator nodes, 1 is explorer node, 1 is RPC node and 1 is bootnode.
+4. For the Explorer and the RPC Node we use Nginx as reverse proxy and Let's encrypt for SSL. We also use Cloudflare for DNS and full SSL protection which works hands in hands with Lets Enctypt to offer end to end encryption between client and server.
+5. The Explorer is industry leading blockscout V2 running using docker.
+
+For deployment we use Ubuntu servers, only accessible with root priviledged non root user throuhg Private key authentication on a custom SSH port. 
+
+
+# What the EVM Chain product offers?
+
+The Offered EVM chain comes with a block time of 3 to 15 seconds with deterministic finality.
+The Offered EVM chain suports metamask as primary wallet and inherits built in ETH Address and Private key support. Meaning same Metamask can store your ETH and your Own Coin.
+The Offered EVM Chain supports All Etherum Token Standards ranging from ERC-20, ERC-720, ERC-1155 and all others.
+The Offered EVM Chain supports Web3 DApps along with DEXs like Pancake Swap.
+The Offered EVM Chain supports L2 Chains on  top of it.
+
+We offer 60 Days of free technical support for this product and afterwards maintenace with reasonable monthly or yearly pricing.
+
+
+Client asked for scope of work but I am planning to create a PPT rather, I don't know if I would call it product broucher or anything else, you tell. Also draft content for my PPT from the points I have mentioned as per the sections. Please see if I could add any more sections and if yes provide content for those as well.

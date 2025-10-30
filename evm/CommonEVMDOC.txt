@@ -213,6 +213,8 @@ Facuet local compilation commands:
 ./eth-faucet -httpport 8080 -wallet.provider https://testnetrpc.3cchain.io/ -wallet.keyjson keystoreupcg -wallet.keypass password.txt
 
 -----------------------------------------------------------------
+STATIC WEBSITE WITH CLOUDFLARE FULL STRICT PROTECTION
+# Create HTML
 
 sudo mkdir -p /var/www/your_domain/html
 
@@ -231,23 +233,97 @@ sudo nano /var/www/your_domain/html/index.html
     </body>
 </html>
 
+# Create Cloudflare IP file:
+
+sudo nano /etc/nginx/conf.d/cloudflare-realip.conf:
+
+# Cloudflare IPv4
+set_real_ip_from 103.21.244.0/22;
+set_real_ip_from 103.22.200.0/22;
+set_real_ip_from 103.31.4.0/22;
+set_real_ip_from 104.16.0.0/13;
+set_real_ip_from 104.24.0.0/14;
+set_real_ip_from 108.162.192.0/18;
+set_real_ip_from 131.0.72.0/22;
+set_real_ip_from 141.101.64.0/18;
+set_real_ip_from 162.158.0.0/15;
+set_real_ip_from 172.64.0.0/13;
+set_real_ip_from 173.245.48.0/20;
+set_real_ip_from 188.114.96.0/20;
+set_real_ip_from 190.93.240.0/20;
+set_real_ip_from 197.234.240.0/22;
+set_real_ip_from 198.41.128.0/17;
+
+# Cloudflare IPv6
+set_real_ip_from 2400:cb00::/32;
+set_real_ip_from 2606:4700::/32;
+set_real_ip_from 2803:f800::/32;
+set_real_ip_from 2405:b500::/32;
+set_real_ip_from 2405:8100::/32;
+set_real_ip_from 2a06:98c0::/29;
+set_real_ip_from 2c0f:f248::/32;
+
+real_ip_header CF-Connecting-IP;
+real_ip_recursive on;
+
+
+
+# Create Nginx Conf
+
 sudo nano /etc/nginx/sites-available/your_domain.conf
 
+# HTTP → HTTPS
 server {
-        listen 80;
-        listen [::]:80;
-
-        root /var/www/your_domain/html;
-        index index.html index.htm index.nginx-debian.html;
-
-        server_name your_domain www.your_domain;
-
-        location / {
-                try_files $uri $uri/ =404;
-        }
+    listen 80;
+    listen [::]:80;
+    server_name your_domain www.your_domain;
+    return 301 https://your_domain$request_uri;
 }
 
+# Main HTTPS server
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name your_domain www.your_domain;
+
+    # SSL - managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/your_domain/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/your_domain/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    # Document root
+    root /var/www/your_domain/html;
+    index index.html;
+
+    # SPA-friendly
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Block hidden files
+    location ~ /\. {
+        deny all;
+    }
+
+    # Cache static assets
+    location ~* \.(?:ico|css|js|gif|jpe?g|png|woff2?|ttf|svg|eot|mp4|webm|ogg|ogv|json)$ {
+        expires 30d;
+        add_header Cache-Control "public, no-transform";
+        access_log off;
+        try_files $uri =404;
+    }
+
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+}
+
+
 sudo ln -s /etc/nginx/sites-available/your_domain.conf /etc/nginx/sites-enabled/your_domain.conf
+
 
 -----------------------------------------------------------------
 #!/usr/bin/env bash
