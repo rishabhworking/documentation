@@ -1,16 +1,10 @@
 # 1. Download all required .deb packages
-wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/containerd.io_1.6.28-2_amd64.deb
-wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-ce-cli_20.10.24~3-0~ubuntu-jammy_amd64.deb
-wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-ce_20.10.24~3-0~ubuntu-jammy_amd64.deb
-wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-compose-plugin_2.20.2-1~ubuntu.22.04~jammy_amd64.deb
+wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/containerd.io_1.6.28-2_amd64.deb && wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-ce-cli_20.10.24~3-0~ubuntu-jammy_amd64.deb && wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-ce_20.10.24~3-0~ubuntu-jammy_amd64.deb && wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-compose-plugin_2.20.2-1~ubuntu.22.04~jammy_amd64.deb
 
 
 
 # 2. Install in the correct dependency order
-sudo dpkg -i containerd.io_1.6.28-2_amd64.deb
-sudo dpkg -i docker-ce-cli_20.10.24~3-0~ubuntu-jammy_amd64.deb
-sudo dpkg -i docker-ce_20.10.24~3-0~ubuntu-jammy_amd64.deb
-sudo dpkg -i docker-compose-plugin_2.20.2-1~ubuntu.22.04~jammy_amd64.deb
+sudo dpkg -i containerd.io_1.6.28-2_amd64.deb && sudo dpkg -i docker-ce-cli_20.10.24~3-0~ubuntu-jammy_amd64.deb && sudo dpkg -i docker-ce_20.10.24~3-0~ubuntu-jammy_amd64.deb && sudo dpkg -i docker-compose-plugin_2.20.2-1~ubuntu.22.04~jammy_amd64.deb
 
 
 
@@ -39,21 +33,119 @@ sudo docker run hello-world
 
 
 
+------------------------------------------------------------------------------------
+
+# Run the Geth Node in SAFE WAY:-
+
+screen geth --datadir ".croston" --networkid 71444 --port 12584 --syncmode 'full' --bootnodes enode://e45b8dc7f218b4ab8bed7396713b75bc2510b54078d7ea828fc7465f1a055d0cc0ccee531709516be6034736cb57a92c673412e17cf9906a3d6463226489c1ea@157.245.157.133:12584 --gcmode=archive --ws --ws.addr   "0.0.0.0" --ws.origins="http://localhost,http://host.docker.internal" --ws.api "eth,net,web3,txpool" --http --http.addr "0.0.0.0" --http.vhosts="localhost,host.docker.internal" --http.api "eth,net,web3,txpool" --miner.gasprice "3000000000"
 
 
+docker network inspect bridge | grep Subnet
+>> "Subnet": "172.17.0.0/16",
+
+
+sudo ufw allow from 127.0.0.1       to any port 8545 proto tcp
+sudo ufw allow from 172.17.0.0/16   to any port 8545 proto tcp
+sudo ufw deny  8545/tcp
+
+sudo ufw allow from 127.0.0.1       to any port 8546 proto tcp
+sudo ufw allow from 172.17.0.0/16   to any port 8546 proto tcp
+sudo ufw deny  8546/tcp
+
+Note:- Replace 172.17.0.0/16 with your actual Docker bridge subnet
+
+sudo ufw allow ssh
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
+Note:- Allow the P2P Port both on UDP and TCP for the blockchain itself.
+
+------------------------------------------------------------------------------------
 # Cloining Blockscout:
 git clone https://github.com/blockscout/blockscout
 
+
+# Set Environment docker-compose.yml
+Set RPC URL, WSS URL, Trace URL and Chain ID in the 'environment' section
+
+Also remove the nft-media handler section
+
+
+# Corrections: services/nginx.yml
+Use the nginx.yml which has been specified by the Blockscout Advisor himself (god bless him).
+
+# Corrections: prxoy/default.conf.template
+Use the default.conf.template which has been specified by the Blockscout Advisor himself (god bless him again).
+
+Note:- the edited version uses the domain names and also configures the SSL certificates.
+
+------------------------------------------------------------------------------------
+
+# Generating and Placing SSL Certificates
+mkdir ssl
+mkdir ssl/explorer
+mkdir ssl/stats
+mkdir ssl/visualizer
+
+# Create SSL using certbot
+
+certbot certonly
+>> vrixa.io
+
+certbot certonly
+>> stats.vrixa.io
+
+certbot certonly
+>> visualizer.vrixa.io
+
+Note: We run the command for each domain one by one
+
+# Copy the certificates
+
+cd ssl/explorer
+sudo cp /etc/letsencrypt/live/vrixa.io/fullchain.pem .
+sudo cp /etc/letsencrypt/live/vrixa.io/privkey.pem .
+
+cd ssl/stats
+sudo cp /etc/letsencrypt/live/stats.vrixa.io/fullchain.pem .
+sudo cp /etc/letsencrypt/live/stats.vrixa.io/privkey.pem .
+
+cd ssl/visualizer
+sudo cp /etc/letsencrypt/live/visualizer.vrixa.io/fullchain.pem .
+sudo cp /etc/letsencrypt/live/visualizer.vrixa.io/privkey.pem .
+------------------------------------------------------------------------------------
+
 # Up All Docker Containers
-docker compose -f docker-compose.yml up -d
-docker compose -f docker-compose.yml down
+sudo docker compose -f docker-compose.yml up -d
+sudo docker compose -f docker-compose.yml down
 
-
-docker compose -f microservices.yml up -d
-docker compose -f microservices.yml down
-
+------------------------------------------------------------------------------------
 
 Go inside a container: docker exec -it <container_name> bash
+------------------------------------------------------------------------------------
+
+RPC or WSS Links found in:-
+
+1. docker-compose.yml
+2. services/user-ops-index.yml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 https://docs.blockscout.com/setup/deployment/manual-deployment-guide/ubuntu-setup

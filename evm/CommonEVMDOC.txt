@@ -31,7 +31,9 @@ Checking JSON RPC Response from Terminal:
 
 curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' http://localhost:8545
 
-curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' https://rpc.quantoro.io
+curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' http://host.docker.internal:8545
+
+curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' https://rpc.metaprochain.io
 
 Installing WebSocket Tool and Checking reponse from local terminal:
 
@@ -86,67 +88,78 @@ Public RPC Node Nginx Conf:
 
 sudo nano /etc/nginx/sites-available/domain.com.conf
                                                        
-limit_req_zone $binary_remote_addr zone=limit:2m rate=3r/s;
+
+geo $limit {
+    default         1;
+
+    # Whitelisted IPs (add yours here)
+    127.0.0.1       0;
+
+}
+
+map $limit $limit_key {
+    1   $binary_remote_addr;   # rate limited
+    0   "";                    # whitelisted — empty key = no limit
+}
+
+limit_req_zone $limit_key zone=limit:2m rate=3r/s;
+
 
 server {
-  server_name domain.com;
+    server_name domain.com;
 
-  # HTTP RPC Endpoint
-  location ^~ / {
-      limit_req zone=limit burst=15;
+    # HTTP RPC Endpoint
+    location ^~ / {
+        limit_req zone=limit burst=15;
 
-      # CORS Headers
-      add_header 'Access-Control-Allow-Origin' '*' always;
-      add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
-      add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept' always;
+        add_header 'Access-Control-Allow-Origin'  '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept' always;
+        if ($request_method = OPTIONS) {
+            add_header 'Access-Control-Allow-Origin'  '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept';
+            return 204;
+        }
 
-      if ($request_method = OPTIONS ) {
-          add_header 'Access-Control-Allow-Origin' '*';
-          add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-          add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept';
-          return 204;
-      }
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade    $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header X-Real-IP        $remote_addr;
+        proxy_set_header X-Forwarded-For  $proxy_add_x_forwarded_for;
+        proxy_set_header Host             $http_host;
+        proxy_set_header X-NginX-Proxy    true;
+        proxy_pass http://127.0.0.1:8545/;
+    }
 
-      proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection "upgrade";
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header Host $http_host;
-      proxy_set_header X-NginX-Proxy true;
-      proxy_pass http://127.0.0.1:8545/;
-  }
+    # WebSocket Endpoint
+    location ^~ /ws {
+        limit_req zone=limit burst=15;
 
-  # WebSocket Endpoint
-  location ^~ /ws {
-      limit_req zone=limit burst=15;
+        add_header 'Access-Control-Allow-Origin'  '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept' always;
+        if ($request_method = OPTIONS) {
+            add_header 'Access-Control-Allow-Origin'  '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept';
+            return 204;
+        }
 
-      # CORS Headers
-      add_header 'Access-Control-Allow-Origin' '*' always;
-      add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
-      add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept' always;
-
-      if ($request_method = OPTIONS ) {
-          add_header 'Access-Control-Allow-Origin' '*';
-          add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-          add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept';
-          return 204;
-      }
-
-      proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection "upgrade";
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header Host $http_host;
-      proxy_set_header X-NginX-Proxy true;
-      proxy_pass http://127.0.0.1:8546/;
-  }
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade    $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header X-Real-IP        $remote_addr;
+        proxy_set_header X-Forwarded-For  $proxy_add_x_forwarded_for;
+        proxy_set_header Host             $http_host;
+        proxy_set_header X-NginX-Proxy    true;
+        proxy_pass http://127.0.0.1:8546/;
+    }
 }
 
 sudo ln -s /etc/nginx/sites-available/domain.com.conf /etc/nginx/sites-enabled/domain.com.conf
 
-pleae make changes in my template so I could reuse it
+
 -----------------------------------------------------------------
 
 Private RPC Node Nginx Conf:
@@ -235,7 +248,7 @@ sudo nano /var/www/your_domain/html/index.html
 
 # Create Cloudflare IP file:
 
-sudo nano /etc/nginx/conf.d/cloudflare-realip.conf:
+sudo nano /etc/nginx/conf.d/cloudflare-realip.conf
 
 # Cloudflare IPv4
 set_real_ip_from 103.21.244.0/22;
@@ -266,7 +279,109 @@ set_real_ip_from 2c0f:f248::/32;
 real_ip_header CF-Connecting-IP;
 real_ip_recursive on;
 
+----------------
 
+include /etc/nginx/conf.d/cloudflare-realip.conf; # Include Cloudflare IPs
+(after error log)
+    
+----------------
+
+sudo nano /etc/nginx/sites-available/domain.com.conf
+
+limit_req_zone $binary_remote_addr zone=limit:4m rate=6r/s; # 4MB Memory 6 requests per second, change if have more resources
+server {
+    server_name domain.com;
+    access_log  /var/log/nginx/explorer.access.log;
+    error_log  /var/log/nginx/explorer.error.log;
+    
+    include /etc/nginx/conf.d/cloudflare-realip.conf; # Include Cloudflare IPs
+
+    location / {
+        limit_req zone=limit burst=18; # 18 Max Requests under 3 seconds
+        proxy_pass http://localhost:4000/;
+        proxy_http_version 1.1;
+        proxy_redirect off;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+
+}
+
+sudo ln -s /etc/nginx/sites-available/domain.com.conf /etc/nginx/sites-enabled/domain.com.conf
+
+----------------
+
+
+sudo nano /etc/nginx/sites-available/domain.com.conf
+                                                       
+limit_req_zone $binary_remote_addr zone=limit:2m rate=3r/s;
+
+server {
+  server_name domain.com;
+  
+  include /etc/nginx/conf.d/cloudflare-realip.conf; # Include Cloudflare IPs
+
+  # HTTP RPC Endpoint
+  location ^~ / {
+      limit_req zone=limit burst=15;
+
+      # CORS Headers
+      add_header 'Access-Control-Allow-Origin' '*' always;
+      add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+      add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept' always;
+
+      if ($request_method = OPTIONS ) {
+          add_header 'Access-Control-Allow-Origin' '*';
+          add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+          add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept';
+          return 204;
+      }
+
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Host $http_host;
+      proxy_set_header X-NginX-Proxy true;
+      proxy_pass http://127.0.0.1:8545/;
+  }
+
+  # WebSocket Endpoint
+  location ^~ /ws {
+      limit_req zone=limit burst=15;
+
+      # CORS Headers
+      add_header 'Access-Control-Allow-Origin' '*' always;
+      add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+      add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept' always;
+
+      if ($request_method = OPTIONS ) {
+          add_header 'Access-Control-Allow-Origin' '*';
+          add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+          add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept';
+          return 204;
+      }
+
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Host $http_host;
+      proxy_set_header X-NginX-Proxy true;
+      proxy_pass http://127.0.0.1:8546/;
+  }
+}
+
+sudo ln -s /etc/nginx/sites-available/domain.com.conf /etc/nginx/sites-enabled/domain.com.conf
+
+
+----------------
 
 # Create Nginx Conf
 
@@ -385,6 +500,7 @@ sudo apt -y install automake libtool inotify-tools gcc libgmp-dev make g++ git
 # Install PostgreSQL
 sudo apt -y install postgresql postgresql-contrib
 sudo systemctl start postgresql.service
+sudo systemctl status postgresql.service
 sudo -u postgres psql -c "CREATE USER blockscout WITH PASSWORD 'Passw0Rd'"
 sudo -u postgres psql -c "ALTER USER blockscout WITH SUPERUSER"
 sudo -u blockscout psql -c "CREATEDB blockscout"
@@ -415,6 +531,8 @@ npm install --save solc
 
 ENV Variables for Geth EVM Chains:
 
+#Blockscout Begins
+
 export DATABASE_URL=postgresql://blockscout:Passw0Rd@localhost:5432/blockscout
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US
@@ -426,24 +544,25 @@ export ETHEREUM_JSONRPC_VARIANT=geth
 export BLOCKSCOUT_PROTOCOL=https
 export PORT=4000
 export MIX_ENV=prod
-export COIN="Mezocoin"
-export COIN_NAME="MEZO"
-export SECRET_KEY_BASE=jupeH1o57Fg2dLs6WWkqXbS5yef0Mnndu+uS2qrE0Hm7YNZ0WodHemi7RjZ9KgeJ
+export COIN="Solicoin"
+export COIN_NAME="SLC"
+export SECRET_KEY_BASE=O6280rMHnoSzfXYRNQup0tcj3mC6B2yQWqKI+mm533/NFZBpI0n/lsOYY76oAoFU
 export ECTO_USE_SSL=false
-export NETWORK="MainNet"
-export SUBNETWORK="Mezocoin"
+export NETWORK="Solicoin"
+export SUBNETWORK="Testnet"
 export DISABLE_EXCHANGE_RATES="true"
 export LINK_TO_OTHER_EXPLORERS="false"
 export BLOCK_TRANSFORMER=clique
 export INDEXER_DISABLE_BLOCK_REWARD_FETCHER="true"
 export INDEXER_DISABLE_PENDING_TRANSACTIONS_FETCHER="true"
 export INDEXER_DISABLE_INTERNAL_TRANSACTIONS_FETCHER="true"
-export CHAIN_ID=18048
+export CHAIN_ID=2235
 export POOL_SIZE=10
 export POOL_SIZE_API=10
-export LOGO=/images/headerfooter.png
-export BLOCKSCOUT_HOST=mezoscan.com
+export LOGO=/images/logo.png
+export BLOCKSCOUT_HOST=testnet.solichainscan.com
 export INDEXER_HIDE_INDEXING_PROGRESS_ALERT="true"
+NEXT_PUBLIC_NETWORK_TOKEN_STANDARD_NAME=SRC
 
 -----------------------------------------------------------------
 
@@ -529,13 +648,38 @@ npx hardhat compile
 Note: make sure you change the Token Name in scripts/deploy.js. Also contract address and name in step 5
 
 
+-----------------------------
 
 
 
 
 
 
+limit_req_zone $binary_remote_addr zone=limit:4m rate=6r/s; # 4MB Memory 6 requests per second, change if have more resources
+server {
+    server_name domain.com;
+    access_log  /var/log/nginx/explorer.access.log;
+    error_log  /var/log/nginx/explorer.error.log;
+
+    include /etc/nginx/conf.d/cloudflare.conf; # Include Cloudflare IPs
+
+    location / {
+        limit_req zone=limit burst=18; # 18 Max Requests under 3 seconds
+        proxy_pass http://localhost:17179/;
+        proxy_http_version 1.1;
+        proxy_redirect off;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
 
 
+ALSO SET CLOUDFLARE SSL TO FULL
 
 
+-----------------------------
+RE_CAPTCHA_SECRET_KEY
+RE_CAPTCHA_CLIENT_KEY
