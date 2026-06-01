@@ -78,33 +78,39 @@ WantedBy=multi-user.target
 
 
 
-# env_vars.env file should hold these values ( adjusted for your environment )
-ETHEREUM_JSONRPC_HTTP_URL="localhost:28998"  # json-rpc API of the chain
-ETHEREUM_JSONRPC_TRACE_URL="localhost:28998" # same as json-rpc API 
-DATABASE_URL='postgresql://postgres:Passw0Rd@127.0.0.1:5432/blockscout' # database connection from Step 2
-SECRET_KEY_BASE="xKFVAamIi3Psh0n7fFRtGxJECUBpVJrEOq9B+UbZdn+QOXgvSVWPVFr2v4/eGE+E/" # secret key base 
-ETHEREUM_JSONRPC_WS_URL="ws://localhost:28998/ws" # websocket API of the chain
-CHAIN_ID=11997 # chain id
-HEART_COMMAND="systemctl restart explorer" # command used by blockscout to restart it self in case of failure
-SUBNETWORK="Supertestnet PoA" # this will be in html title
-LOGO="/images/polygon_edge_logo.svg" # logo location
-LOGO_FOOTER="/images/polygon_edge_logo.svg" # footer logo location
-COIN="AETA" # coin
-COIN_NAME="Arietta" # name of the coin
-INDEXER_DISABLE_BLOCK_REWARD_FETCHER="true" # disable block reward indexer as Polygon Edge doesn't support tracing
-INDEXER_DISABLE_PENDING_TRANSACTIONS_FETCHER="true" # disable pending transactions indexer as Polygon Edge doesn't support tracing
-INDEXER_DISABLE_INTERNAL_TRANSACTIONS_FETCHER="true" # disable internal transactions indexer as Polygon Edge doesn't support tracing
-MIX_ENV="prod" # run in production mode
-BLOCKSCOUT_PROTOCOL="http" # protocol to run blockscout web service on
-PORT=4000 # port to run blockscout service on
-DISABLE_EXCHANGE_RATES="true" # disable fetching of exchange rates
-POOL_SIZE=200 # the number of database connections
-POOL_SIZE_API=50 # the number of read-only database connections
-ECTO_USE_SSL="false" # if protocol is set to http this should be false 
-HEART_BEAT_TIMEOUT=60 # run HEARTH_COMMAND if heartbeat missing for this amount of seconds
-INDEXER_MEMORY_LIMIT="10Gb" # soft memory limit for indexer - depending on the size of the chain and the amount of RAM the server has
-FETCH_REWARDS_WAY="manual" # disable trace_block query 
-INDEXER_EMPTY_BLOCKS_SANITIZER_BATCH_SIZE=100 # sanitize empty block in this batch size
+#blockscoutbegins
+
+export DATABASE_URL=postgresql://blockscout:Passw0Rd@localhost:5432/blockscout
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US
+export LC_ALL=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+export ETHEREUM_JSONRPC_HTTP_URL=http://localhost:8545
+export ETHEREUM_JSONRPC_WS_URL=ws://localhost:8546
+export ETHEREUM_JSONRPC_VARIANT=geth
+export BLOCKSCOUT_PROTOCOL=https
+export PORT=4000
+export MIX_ENV=prod
+export COIN="KNC Coin"
+export COIN_NAME="KNC"
+export SECRET_KEY_BASE=O6280rMHnoSzfXYRNQup0tcj3mC6B2yQWqKI+mm533/NFZBpI0n/lsOYY76oAoFU
+export ECTO_USE_SSL=false
+export NETWORK="KNC Coin"
+export SUBNETWORK="Testnet"
+export DISABLE_EXCHANGE_RATES="true"
+export LINK_TO_OTHER_EXPLORERS="false"
+export BLOCK_TRANSFORMER=clique
+export INDEXER_DISABLE_BLOCK_REWARD_FETCHER="true"
+export INDEXER_DISABLE_PENDING_TRANSACTIONS_FETCHER="true"
+export INDEXER_DISABLE_INTERNAL_TRANSACTIONS_FETCHER="true"
+export CHAIN_ID=2235
+export POOL_SIZE=10
+export POOL_SIZE_API=10
+export LOGO=/images/logo.png
+#export BLOCKSCOUT_HOST=testnet.kedarneuralchains.in
+export INDEXER_HIDE_INDEXING_PROGRESS_ALERT="true"
+export NEXT_PUBLIC_NETWORK_TOKEN_STANDARD_NAME=SRC
+export SHOW_TESTNET_LABEL=true
 
 
 
