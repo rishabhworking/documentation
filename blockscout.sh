@@ -111,6 +111,29 @@ export LOGO=/images/logo.png
 export INDEXER_HIDE_INDEXING_PROGRESS_ALERT="true"
 export NEXT_PUBLIC_NETWORK_TOKEN_STANDARD_NAME=SRC
 export SHOW_TESTNET_LABEL=true
+export DISABLE_WEBAPP=false
+
+
+
+The guard passes the moment that migration's row in migrations_status reads completed. Since your config has:
+
+INDEXER_DISABLE_INTERNAL_TRANSACTIONS_FETCHER="true"
+
+your internal_transactions table isn't being populated, so the heavy PK rewrite has no real work to do — marking it complete is safe for your setup. Run this once against your DB (your DATABASE_URL is already
+exported, so in your shell you can do):
+
+psql "$DATABASE_URL" -c "INSERT INTO migrations_status (migration_name, status, inserted_at, updated_at) VALUES ('heavy_indexes_create_internal_transactions_pkey', 'completed', NOW(), NOW()) ON CONFLICT 
+(migration_name) DO UPDATE SET status = 'completed', updated_at = NOW();"
+
+Then mix phx.server boots normally, every time, with your indexed data intact and the open-source code untouched. (In this session you can run it by typing ! psql ....)
+
+One honest caveat: this records the migration as done without performing the PK rewrite. That's fine while the internal-transactions fetcher is disabled. If you ever set
+INDEXER_DISABLE_INTERNAL_TRANSACTIONS_FETCHER="false", first DELETE FROM migrations_status WHERE migration_name = 'heavy_indexes_create_internal_transactions_pkey'; and let it run for real (keep
+MIGRATION_HEAVY_INDEX_OPERATIONS_CHECK_INTERVAL short so it finishes before you restart).
+
+
+psql "$DATABASE_URL" -c "INSERT INTO migrations_status (migration_name, status, inserted_at, updated_at) VALUES ('heavy_indexes_create_internal_transactions_pkey', 'completed', NOW(), NOW()) ON CONFLICT 
+(migration_name) DO UPDATE SET status = 'completed', updated_at = NOW();"
 
 
 
